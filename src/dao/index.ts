@@ -77,16 +77,16 @@ const Dao = {
   /**
    * adds(多条记录)
    * @description 将数组对象插入到集合中
-   * @param {string} dbName  	表名
+   * @param {string} dbName   表名
    * @param {Array.<object>} dataJson  需要添加的数据(json数组格式)
    * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
    * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
    * @example
-   * res.id = await nw.db.adds({
-   *  dbName:dbName,
-   *  dataJson:[]
-   * });
-   */
+    res.id = await nw.db.adds({
+      dbName:dbName,
+      dataJson:[]
+    });
+    */
   adds: async ({
     dbName,
     dataJson,
@@ -117,17 +117,17 @@ const Dao = {
   /**
    * del(根据条件删除记录)
    * @description 批量删除符合条件的记录,可批量删除
-   * @param {string} dbName  	表名
+   * @param {string} dbName   表名
    * @param {object} whereJson 条件
    * @returns {number} res 返回值为删除的记录数量
    * @example
-   * res.num = await nw.db.del({
-   *  dbName:dbName,
-   *  whereJson:{
-   *    _id:"1"
-   *  }
-   * });
-   */
+    res.num = await nw.db.del({
+      dbName:dbName,
+      whereJson:{
+        _id:"1"
+      }
+    });
+  */
   del: async ({ dbName, whereJson }: { dbName: string; whereJson: object }) => {
     // 数据库查询开始----------------------------------------------------------
     let num = 0;
@@ -152,21 +152,21 @@ const Dao = {
   /**
    * update(根据条件修改记录)
    * @description 批量修改符合条件的记录,可批量修改
-   * @param {string} dbName  	表名
+   * @param {string} dbName   表名
    * @param {object} whereJson 条件
    * @param {object} dataJson  需要修改的数据(json格式)
    * @returns {number} res 返回值为修改的记录数量
    * @example
-   * res.num = await nw.db.update({
-   *  dbName:dbName,
-   *  whereJson:{
+    res.num = await nw.db.update({
+      dbName:dbName,
+      whereJson:{
         _add_time: _.gte(time).lte(time + 1000),
       },
       dataJson:{
         kehuid:"001"
       }
     });
-   */
+    */
   update: async ({
     dbName,
     whereJson,
@@ -199,7 +199,7 @@ const Dao = {
   /**
    * select(根据条件查询记录)
    * @description 根据条件查询记录
-   * @param {string} dbName  	表名
+   * @param {string} dbName  表名
    * @param {boolean} getCount 是否获取符合条件的总数量,默认不获取
    * @param {number} pageIndex 第几页,默认第1页
    * @param {number} pageSize  每页显示数量，默认10条
@@ -212,23 +212,23 @@ const Dao = {
    * @returns {number} res.pageIndex 当前所在页数
    * @returns {number} res.pageSize  每页显示数量
    * @example
-   * res = await nw.db.select({
-   *   dbName:dbName,
-   *   getCount:true,
-   *   pageIndex:1,
-   *   pageSize:100,
-   *   whereJson:{
-   *     _add_time: _.gte(time).lte(time + 1000),
-   *   },
-   *   fieldJson:{
-   *     _id:1,
-   *     kehuid:1,
-   *   },
-   *   sortArr:[{
-   *     _add_time:-1
-   *   }]
-   * });
-   */
+    res = await nw.db.select({
+      dbName:dbName,
+      getCount:true,
+      pageIndex:1,
+      pageSize:100,
+      whereJson:{
+        _add_time: _.gte(time).lte(time + 1000),
+      },
+      fieldJson:{
+        _id:1,
+        kehuid:1,
+      },
+      sortArr:[{
+        _add_time:-1
+      }]
+    });
+  */
   select: async ({
     dbName,
     whereJson,
@@ -309,17 +309,17 @@ const Dao = {
   /**
    * count(根据条件查询记录数量)
    * @description 根据条件查询记录数量
-   * @param {string} dbName  	表名
+   * @param {string} dbName  表名
    * @param {object} whereJson 条件
    * @returns {number|null} res 返回值，失败返回null
    * @example
-   * res = await nw.db.count({
-   *  dbName:dbName,
-   *  whereJson:{
-   *    _add_time: _.gte(time).lte(time + 1000),
-   *  }
-   * });
-   */
+    res = await nw.db.count({
+    dbName:dbName,
+    whereJson:{
+      _add_time: _.gte(time).lte(time + 1000),
+    }
+    });
+  */
   count: async ({
     dbName,
     whereJson,
@@ -346,19 +346,19 @@ const Dao = {
    * 注意:
    * 1.字段必须是数值类型
    * 2.若数据条数大于10万以上,可能会有问题
-   * @param {string} dbName  	表名
+   * @param {string} dbName  表名
    * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
    * @param {object} whereJson 条件
    * @returns {number|null} res 返回值，失败返回null
    * @example
-   * res = await nw.db.sum({
-   *  dbName:dbName,
-   *  fieldName:"money",
-   *   whereJson:{
-   *    _add_time: _.gte(time).lte(time + 1000),
-   *  }
-   * });
-   */
+    res = await nw.db.sum({
+    dbName:dbName,
+    fieldName:"money",
+      whereJson:{
+      _add_time: _.gte(time).lte(time + 1000),
+    }
+    });
+  */
   sum: async ({
     dbName,
     fieldName,
@@ -398,19 +398,19 @@ const Dao = {
    * 注意:
    * 1.字段必须是数值类型
    * 2.若数据条数大于10万以上,可能会有问题
-   * @param {string} dbName  	表名
+   * @param {string} dbName  表名
    * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
    * @param {object} whereJson 条件
    * @returns {number|null} res 返回值，失败返回null
    * @example
-   * res = await nw.db.avg({
-   *  dbName:dbName,
-   *  fieldName:"money",
-   *  whereJson:{
-   *    _add_time: _.gte(time).lte(time + 1000),
-   *  }
-   * });
-   */
+    res = await nw.db.avg({
+    dbName:dbName,
+    fieldName:"money",
+    whereJson:{
+      _add_time: _.gte(time).lte(time + 1000),
+    }
+    });
+  */
   avg: async ({
     dbName,
     fieldName,
@@ -448,19 +448,19 @@ const Dao = {
    * 注意:
    * 1.字段必须是数值类型
    * 2.若数据条数大于10万以上,可能会有问题
-   * @param {string} dbName  	表名
+   * @param {string} dbName  表名
    * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
    * @param {object} whereJson 条件
    * @returns {number|null} res 返回值，失败返回null
    * @example
-   * res = await nw.db.max({
-   *  dbName:dbName,
-   *  fieldName:"money",
-   *  whereJson:{
-   *     _add_time: _.gte(time).lte(time + 1000),
-   *  }
-   * });
-   */
+    res = await nw.db.max({
+    dbName:dbName,
+    fieldName:"money",
+    whereJson:{
+        _add_time: _.gte(time).lte(time + 1000),
+    }
+    });
+  */
   max: async ({
     dbName,
     fieldName,
@@ -498,19 +498,19 @@ const Dao = {
    * 注意:
    * 1.字段必须是数值类型
    * 2.若数据条数大于10万以上,可能会有问题
-   * @param {string} dbName  	表名
+   * @param {string} dbName  表名
    * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
    * @param {object} whereJson 条件
    * @returns {number|null} res 返回值，失败返回null
    * @example
-   * res = await nw.db.min({
-   *  dbName:dbName,
-   *  fieldName:"money",
-   *  whereJson:{
-   *    _add_time: _.gte(time).lte(time + 1000),
-   *  }
-   * });
-   */
+    res = await nw.db.min({
+    dbName:dbName,
+    fieldName:"money",
+    whereJson:{
+      _add_time: _.gte(time).lte(time + 1000),
+    }
+    });
+  */
   min: async ({
     dbName,
     fieldName,
@@ -543,59 +543,59 @@ const Dao = {
   },
 
   /**
-    * selects(万能联表,多表连查)
-    * @description 万能联表,多表连查
-    * @param {string} dbName  	主表名
-    * @param {boolean} getCount   是否获取总条数
-    * @param {number} pageIndex   页码
-    * @param {number} pageSize   每页条数
-    * @param {object} whereJson   主表where条件
-    * @param {object} fieldJson   主表字段显示规则
-    * @param {array} sortArr   主表排序规则
-    * @param {array} foreignDB   副表列表
-    * @returns {object|null} res 返回值，失败返回null
-    * @example
-      res = await nw.baseDao.selects({
-        dbName: "uni-id-users",
-      getCount: false,
-      pageIndex: 1,
-      pageSize: 10,
-      // 主表where条件
-      whereJson: {
+  * selects(万能联表,多表连查)
+  * @description 万能联表,多表连查
+  * @param {string} dbName  	主表名
+  * @param {boolean} getCount   是否获取总条数
+  * @param {number} pageIndex   页码
+  * @param {number} pageSize   每页条数
+  * @param {object} whereJson   主表where条件
+  * @param {object} fieldJson   主表字段显示规则
+  * @param {array} sortArr   主表排序规则
+  * @param {array} foreignDB   副表列表
+  * @returns {object|null} res 返回值，失败返回null
+  * @example
+  res = await nw.baseDao.selects({
+    dbName: "uni-id-users",
+    getCount: false,
+    pageIndex: 1,
+    pageSize: 10,
+    // 主表where条件
+    whereJson: {
 
+    },
+    // 主表字段显示规则
+    fieldJson: {
+      token: false,
+      password: false,
+    },
+    // 主表排序规则
+    sortArr: [{ "name": "_id","type": "desc" }],
+    // 副表列表
+    foreignDB: [
+      {
+        dbName: "order",
+        localKey:"_id",
+        foreignKey: "user_id",
+        as: "orderList",
+        limit: 10,
+        // 副表where条件
+        whereJson: {},
+        // 副表字段显示规则
+        fieldJson: {},
+        // 副表排序规则
+        sortArr: [{ "name": "time","type": "desc" }],
       },
-      // 主表字段显示规则
-      fieldJson: {
-        token: false,
-        password: false,
-      },
-      // 主表排序规则
-      sortArr: [{ "name": "_id","type": "desc" }],
-      // 副表列表
-      foreignDB: [
-        {
-          dbName: "order",
-          localKey:"_id",
-          foreignKey: "user_id",
-          as: "orderList",
-          limit: 10,
-          // 副表where条件
-          whereJson: {},
-          // 副表字段显示规则
-          fieldJson: {},
-          // 副表排序规则
-          sortArr: [{ "name": "time","type": "desc" }],
-        },
-        {
-          dbName: "vip",
-          localKey:"_id",
-          foreignKey: "user_id",
-          as: "vipInfo",
-          limit: 1, // 当limit = 1时，以对象形式返回，否则以数组形式返回
-        }
-      ]
-      });
-    */
+      {
+        dbName: "vip",
+        localKey:"_id",
+        foreignKey: "user_id",
+        as: "vipInfo",
+        limit: 1, // 当limit = 1时，以对象形式返回，否则以数组形式返回
+      }
+    ]
+  });
+  */
   selects: async function ({
     dbName,
     whereJson = {},

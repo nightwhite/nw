@@ -49,18 +49,18 @@ export async function main(ctx: FunctionContext) {
 
 ```js
 /**
-   * adds(多条记录)
-   * @description 将数组对象插入到集合中
-   * @param {string} dbName   表名
-   * @param {Array.<object>} dataJson  需要添加的数据(json数组格式)
-   * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
-   * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
-   * @example
-   * res.id = await nw.db.adds({
-   *  dbName:dbName,
-   *  dataJson:[]
-   * });
-   */
+ * adds(多条记录)
+ * @description 将数组对象插入到集合中
+ * @param {string} dbName   表名
+ * @param {Array.<object>} dataJson  需要添加的数据(json数组格式)
+ * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
+ * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+ * @example
+  res.id = await nw.db.adds({
+    dbName:dbName,
+    dataJson:[]
+  });
+  */
 ```
 
 ### 3.根据条件删除记录(del)
@@ -73,12 +73,12 @@ export async function main(ctx: FunctionContext) {
  * @param {object} whereJson 条件
  * @returns {number} res 返回值为删除的记录数量
  * @example
- * res.num = await nw.db.del({
- *  dbName:dbName,
- *  whereJson:{
- *    _id:"1"
- *  }
- * });
+  res.num = await nw.db.del({
+    dbName:dbName,
+    whereJson:{
+      _id:"1"
+    }
+  });
  */
 ```
 
@@ -93,9 +93,9 @@ export async function main(ctx: FunctionContext) {
  * @param {object} dataJson  需要修改的数据(json格式)
  * @returns {number} res 返回值为修改的记录数量
  * @example
- * res.num = await nw.db.update({
- *  dbName:dbName,
- *  whereJson:{
+  res.num = await nw.db.update({
+    dbName:dbName,
+    whereJson:{
       _add_time: _.gte(time).lte(time + 1000),
     },
     dataJson:{
@@ -124,22 +124,22 @@ export async function main(ctx: FunctionContext) {
  * @returns {number} res.pageIndex 当前所在页数
  * @returns {number} res.pageSize  每页显示数量
  * @example
- * res = await nw.db.select({
- *   dbName:dbName,
- *   getCount:true,
- *   pageIndex:1,
- *   pageSize:100,
- *   whereJson:{
- *     _add_time: _.gte(time).lte(time + 1000),
- *   },
- *   fieldJson:{
- *     _id:1,
- *     kehuid:1,
- *   },
- *   sortArr:[{
- *     _add_time:-1
- *   }]
- * });
+  res = await nw.db.select({
+    dbName:dbName,
+    getCount:true,
+    pageIndex:1,
+    pageSize:100,
+    whereJson:{
+      _add_time: _.gte(time).lte(time + 1000),
+    },
+    fieldJson:{
+      _id:1,
+      kehuid:1,
+    },
+    sortArr:[{
+      _add_time:-1
+    }]
+  });
  */
 ```
 
@@ -224,24 +224,24 @@ res = await nw.db.selects({
 
 ```js
 /**
-   * findByWhereJson
-   * @description 根据whereJson查询对象
-   * @param {string} dbName  表名
-   * @param {object} fieldJson 字段显示规则
-   * @param {object} whereJson 查询条件
-   * @returns res 返回值为单行记录
-   * @example
-    res = await nw.db.findByWhereJson({
-      dbName:"users",
-      fieldJson:{
-        token:0,
-        password:0,
-      },
-      whereJson:{
-        nickname:"nw"
-      }
-    });
-   */
+ * findByWhereJson
+ * @description 根据whereJson查询对象
+ * @param {string} dbName  表名
+ * @param {object} fieldJson 字段显示规则
+ * @param {object} whereJson 查询条件
+ * @returns res 返回值为单行记录
+ * @example
+  res = await nw.db.findByWhereJson({
+    dbName:"users",
+    fieldJson:{
+      token:0,
+      password:0,
+    },
+    whereJson:{
+      nickname:"nw"
+    }
+  });
+  */
 ```
 
 ### 8、根据 _id 查询记录(findById)
@@ -276,12 +276,12 @@ res = await nw.db.selects({
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
- * res = await nw.db.count({
- *  dbName:dbName,
- *  whereJson:{
- *    _add_time: _.gte(time).lte(time + 1000),
- *  }
- * });
+  res = await nw.db.count({
+   dbName:dbName,
+   whereJson:{
+     _add_time: _.gte(time).lte(time + 1000),
+   }
+  });
  */
 ```
 
@@ -299,13 +299,13 @@ res = await nw.db.selects({
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
- * res = await nw.db.sum({
- *  dbName:dbName,
- *  fieldName:"money",
- *   whereJson:{
- *    _add_time: _.gte(time).lte(time + 1000),
- *  }
- * });
+  res = await nw.db.sum({
+   dbName:dbName,
+   fieldName:"money",
+    whereJson:{
+     _add_time: _.gte(time).lte(time + 1000),
+   }
+  });
  */
 ```
 
@@ -323,13 +323,13 @@ res = await nw.db.selects({
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
- * res = await nw.db.avg({
- *  dbName:dbName,
- *  fieldName:"money",
- *  whereJson:{
- *    _add_time: _.gte(time).lte(time + 1000),
- *  }
- * });
+  res = await nw.db.avg({
+   dbName:dbName,
+   fieldName:"money",
+   whereJson:{
+     _add_time: _.gte(time).lte(time + 1000),
+   }
+  });
  */
 ```
 
@@ -347,13 +347,13 @@ res = await nw.db.selects({
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
- * res = await nw.db.max({
- *  dbName:dbName,
- *  fieldName:"money",
- *  whereJson:{
- *     _add_time: _.gte(time).lte(time + 1000),
- *  }
- * });
+  res = await nw.db.max({
+   dbName:dbName,
+   fieldName:"money",
+   whereJson:{
+      _add_time: _.gte(time).lte(time + 1000),
+   }
+  });
  */
 ```
 
@@ -371,13 +371,13 @@ res = await nw.db.selects({
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
- * res = await nw.db.min({
- *  dbName:dbName,
- *  fieldName:"money",
- *  whereJson:{
- *    _add_time: _.gte(time).lte(time + 1000),
- *  }
- * });
+  res = await nw.db.min({
+   dbName:dbName,
+   fieldName:"money",
+   whereJson:{
+     _add_time: _.gte(time).lte(time + 1000),
+   }
+  });
  */
 ```
 
@@ -406,26 +406,26 @@ res = await nw.db.selects({
  * @param {number} type 为0时格式为：2020-08-01 12:12:12 ， 为1时格式为:20200801121212
  * @returns {string} 返回字符串
  * @example
- * nw.util.getFullTime(new Date(), 0);
- * // 2020-08-01 12:12:12
- * nw.util.getFullTime(new Date(), 1);
- * // 20200801121212
- * nw.util.getFullTime(1596278400000, 0);
- * // 2020-08-01 12:12:12
- * nw.util.getFullTime(1596278400000, 1);
- * // 20200801121212
- * nw.util.getFullTime("2020-08", 0);
- * // 2020-08-01 12:12:12
- * nw.util.getFullTime("2020-08", 1);
- * // 20200801121212
- * nw.util.getFullTime("2020-08-24", 0);
- * // 2020-08-24 12:12:12
- * nw.util.getFullTime("2020-08-24", 1);
- * // 20200824121212
- * nw.util.getFullTime("2020-08-24 12:12:12", 0);
- * // 2020-08-24 12:12:12
- * nw.util.getFullTime("2020-08-24 12:12:12", 1);
- * // 20200824121212
+  nw.util.getFullTime(new Date(), 0);
+  // 2020-08-01 12:12:12
+  nw.util.getFullTime(new Date(), 1);
+  // 20200801121212
+  nw.util.getFullTime(1596278400000, 0);
+  // 2020-08-01 12:12:12
+  nw.util.getFullTime(1596278400000, 1);
+  // 20200801121212
+  nw.util.getFullTime("2020-08", 0);
+  // 2020-08-01 12:12:12
+  nw.util.getFullTime("2020-08", 1);
+  // 20200801121212
+  nw.util.getFullTime("2020-08-24", 0);
+  // 2020-08-24 12:12:12
+  nw.util.getFullTime("2020-08-24", 1);
+  // 20200824121212
+  nw.util.getFullTime("2020-08-24 12:12:12", 0);
+  // 2020-08-24 12:12:12
+  nw.util.getFullTime("2020-08-24 12:12:12", 1);
+  // 20200824121212
  */
 ```
 
@@ -460,8 +460,8 @@ res = await nw.db.selects({
  * @param {string} type HTML HTML标记
  * @returns {boolean} 返回布尔值
  * @example
- * nw.util.checkStr("123456", "mobile");
- * // false
+  nw.util.checkStr("123456", "mobile");
+  // false
  */
 ```
 
@@ -474,7 +474,7 @@ res = await nw.db.selects({
 * @param n 金额
 * @returns 转换后的金额
 * @example
-* nw.util.priceFilter(100)
+ nw.util.priceFilter(100)
 */
 ```
 
@@ -488,10 +488,10 @@ res = await nw.db.selects({
  * @param {object} obj2
  * @returns {object} 返回一个新的对象
  * @example
- * nw.util.objectAssign({a:1,b:2},{b:3,c:4})
- * // {a:1,b:3,c:4}
- * nw.util.objectAssign({a:1,b:2},{b:3,c:4}) === {a:1,b:3,c:4}
- * // false
+  nw.util.objectAssign({a:1,b:2},{b:3,c:4})
+  // {a:1,b:3,c:4}
+  nw.util.objectAssign({a:1,b:2},{b:3,c:4}) === {a:1,b:3,c:4}
+  // false
  */
 ```
 
@@ -504,14 +504,14 @@ res = await nw.db.selects({
  * @param {object} obj
  * @returns {object} 返回一个新的对象
  * @example
- * nw.util.copyObject({a:1,b:2})
- * // {a:1,b:2}
- * nw.util.copyObject({a:1,b:2}) === {a:1,b:2}
- * // false
- * nw.util.copyObject({a:1,b:2}) == {a:1,b:2}
- * // false
- * nw.util.copyObject({a:1,b:2}) === nw.util.copyObject({a:1,b:2})
- * // false
+  nw.util.copyObject({a:1,b:2})
+  // {a:1,b:2}
+  nw.util.copyObject({a:1,b:2}) === {a:1,b:2}
+  // false
+  nw.util.copyObject({a:1,b:2}) == {a:1,b:2}
+  // false
+  nw.util.copyObject({a:1,b:2}) === nw.util.copyObject({a:1,b:2})
+  // false
  */
 ```
 
@@ -524,8 +524,8 @@ res = await nw.db.selects({
  * @param {string} dateString
  * @returns {number} 返回一个时间戳
  * @example
- * nw.util.toTimeLong("2020-08-08 12:12:12")
- * // 1596862732000
+  nw.util.toTimeLong("2020-08-08 12:12:12")
+  // 1596862732000
  */
 ```
 
@@ -540,8 +540,8 @@ res = await nw.db.selects({
  * @param {String} flag 判断标识,默认用id来判断,若flag传-1,代表不去除重复数据
  * @returns {Array} 返回一个新的数组
  * @example
- * nw.util.arr_concat([{id:1,name:"张三"},{id:2,name:"李四"}],[{id:2,name:"李四"},{id:3,name:"王五"}])
- * // [{id:1,name:"张三"},{id:2,name:"李四"},{id:3,name:"王五"}]
+  nw.util.arr_concat([{id:1,name:"张三"},{id:2,name:"李四"}],[{id:2,name:"李四"},{id:3,name:"王五"}])
+  // [{id:1,name:"张三"},{id:2,name:"李四"},{id:3,name:"王五"}]
  */
 ```
 
@@ -555,8 +555,8 @@ res = await nw.db.selects({
  * @param {string} name
  * @returns {any} 返回一个新的数组
  * @example
- * nw.util.getData({a:{b:{c:1}}},"a.b.c")
- * // 1
+  nw.util.getData({a:{b:{c:1}}},"a.b.c")
+  // 1
  */
 ```
 
@@ -570,10 +570,10 @@ res = await nw.db.selects({
  * @param {string} name
  * @param {any} object
  * @example
- * nw.util.setData({a:{b:{c:1}}},"a.b.c",2)
- * // {a:{b:{c:2}}}
- * nw.util.setData({a:{b:{c:1}}},"a.b.c[0]",2)
- * // {a:{b:{c:[2]}}}
+  nw.util.setData({a:{b:{c:1}}},"a.b.c",2)
+  // {a:{b:{c:2}}}
+  nw.util.setData({a:{b:{c:1}}},"a.b.c[0]",2)
+  // {a:{b:{c:[2]}}}
  */
 ```
 
@@ -585,7 +585,7 @@ res = await nw.db.selects({
  * @description 检测参数是否为空 其中 undefined、null、{}、[]、"" 均为空值 ,不要传布尔值
  * @param {any} value
  * @example
- * nw.util.isNull(value);
+  nw.util.isNull(value);
  */
 ```
 
@@ -598,10 +598,10 @@ res = await nw.db.selects({
  * @param {any} value
  * @returns {boolean}
  * @example
- * nw.util.isNotNull(value);
- * // true
- * nw.util.isNotNull(undefined);
- * // false
+  nw.util.isNotNull(value);
+  // true
+  nw.util.isNotNull(undefined);
+  // false
  */
 ```
 
@@ -613,18 +613,18 @@ res = await nw.db.selects({
  * @param {any} strS 传多个参数
  * @returns {boolean}
  * @example
- * nw.util.isNotNullAll(value1,value2,value3);
- * // true
- * nw.util.isNotNullAll(value1,value2,undefined);
- * // false
- * nw.util.isNotNullAll(value1,value2,"");
- * // false
- * nw.util.isNotNullAll(value1,value2,[]);
- * // false
- * nw.util.isNotNullAll(value1,value2,{});
- * // false
- * nw.util.isNotNullAll(value1,value2,null);
- * // false
+  nw.util.isNotNullAll(value1,value2,value3);
+  // true
+  nw.util.isNotNullAll(value1,value2,undefined);
+  // false
+  nw.util.isNotNullAll(value1,value2,"");
+  // false
+  nw.util.isNotNullAll(value1,value2,[]);
+  // false
+  nw.util.isNotNullAll(value1,value2,{});
+  // false
+  nw.util.isNotNullAll(value1,value2,null);
+  // false
  */
 ```
 
@@ -636,18 +636,18 @@ res = await nw.db.selects({
  * @param {any} strS 传多个参数
  * @returns {boolean}
  * @example
- * nw.util.isNullAll(value1,value2,value3);
- * // false
- * nw.util.isNullAll(value1,value2,undefined);
- * // true
- * nw.util.isNullAll(value1,value2,"");
- * // true
- * nw.util.isNullAll(value1,value2,[]);
- * // true
- * nw.util.isNullAll(value1,value2,{});
- * // true
- * nw.util.isNullAll(value1,value2,null);
- * // true
+  nw.util.isNullAll(value1,value2,value3);
+  // false
+  nw.util.isNullAll(value1,value2,undefined);
+  // true
+  nw.util.isNullAll(value1,value2,"");
+  // true
+  nw.util.isNullAll(value1,value2,[]);
+  // true
+  nw.util.isNullAll(value1,value2,{});
+  // true
+  nw.util.isNullAll(value1,value2,null);
+  // true
  */
 ```
 
@@ -659,18 +659,18 @@ res = await nw.db.selects({
  * @param {any} strS 传多个参数
  * @returns {boolean}
  * @example
- * nw.util.isNotNullAll(value1,value2,value3);
- * // true
- * nw.util.isNotNullAll(value1,value2,undefined);
- * // false
- * nw.util.isNotNullAll(value1,value2,"");
- * // false
- * nw.util.isNotNullAll(value1,value2,[]);
- * // false
- * nw.util.isNotNullAll(value1,value2,{});
- * // false
- * nw.util.isNotNullAll(value1,value2,null);
- * // false
+  nw.util.isNotNullAll(value1,value2,value3);
+  // true
+  nw.util.isNotNullAll(value1,value2,undefined);
+  // false
+  nw.util.isNotNullAll(value1,value2,"");
+  // false
+  nw.util.isNotNullAll(value1,value2,[]);
+  // false
+  nw.util.isNotNullAll(value1,value2,{});
+  // false
+  nw.util.isNotNullAll(value1,value2,null);
+  // false
  */
 ```
 
@@ -684,9 +684,8 @@ res = await nw.db.selects({
  * @param {string} value 值
  * @returns {Object} item
  * @example
- * nw.util.getListItem([{"_id": "001"},{"_id": "002"}], "_id", "001");
- * // {"_id": "001"}
- *
+  nw.util.getListItem([{"_id": "001"},{"_id": "002"}], "_id", "001");
+  // {"_id": "001"}
  */
 ```
 
@@ -699,27 +698,27 @@ res = await nw.db.selects({
  * @param {string} key 键
  * @returns {Object} json
  * @example
- * 如[{"_id":"001","name":"name1","sex":1},{"_id":"002","name":"name2","sex":2}]
- * 转成
- * {"001",{"_id":"001","name":"name1","sex":1},"002":{"_id":"002","name":"name2","sex":2}}
- * nw.util.listToJson(list, "_id");
+  如[{"_id":"001","name":"name1","sex":1},{"_id":"002","name":"name2","sex":2}]
+  转成
+  {"001",{"_id":"001","name":"name1","sex":1},"002":{"_id":"002","name":"name2","sex":2}}
+  nw.util.listToJson(list, "_id");
  */
 ```
 
 ### 18、产生指定位数的随机数
 
 ```js
-  /**
-   * 产生指定位数的随机数
-   * @param {number} length 长度
-   * @param {string} str 随机数的字符集 "a-z,A-Z,0-9"
-   * @returns {string} 随机数
-   * @example
-   * nw.util.random(6);
-   * nw.util.random(6, "a-z,0-9");
-   * nw.util.random(6, "A-Z,0-9");
-   * nw.util.random(6, "a-z,A-Z,0-9");
-   */
+/**
+ * 产生指定位数的随机数
+ * @param {number} length 长度
+ * @param {string} str 随机数的字符集 "a-z,A-Z,0-9"
+ * @returns {string} 随机数
+ * @example
+  nw.util.random(6);
+  nw.util.random(6, "a-z,0-9");
+  nw.util.random(6, "A-Z,0-9");
+  nw.util.random(6, "a-z,A-Z,0-9");
+ */
 ```
 
 ### 19、将字符串id转化为指定位数的纯数字字符串id(会重复)
@@ -731,7 +730,7 @@ res = await nw.db.selects({
  * @param {number} length 长度
  * @returns {string} 纯数字字符串id
  * @example
- * nw.util.stringIdToNumberId(uid,6);
+  nw.util.stringIdToNumberId(uid,6);
  */
 ```
 
@@ -744,7 +743,7 @@ res = await nw.db.selects({
  * @param {number} weight 重量
  * @returns {number} 运费
  * @example
- * freightsItem 运费模板
+  freightsItem 运费模板
  {
      first_weight Integer 首重 单位KG,
     first_weight_price Integer 首重 首重价格
@@ -752,8 +751,8 @@ res = await nw.db.selects({
     continuous_weight_price Integer 续重价格 单位分 100 = 1元
     max_weight Integer 重量达到此值时,会多计算首重的价格,并少一次续重的价格 倍乘(相当于拆分多个包裹)
   }
-* weight 运费重量
-* nw.util.calcFreights(freightsItem, weight);
+ weight 运费重量
+ nw.util.calcFreights(freightsItem, weight);
 */
 ```
 
@@ -766,7 +765,7 @@ res = await nw.db.selects({
  * @param {Array} arr2 常量数组
  * @returns {boolean} 是否有交集
  * @example
- * nw.util.checkArrayIntersection(arr1, arr2);
+  nw.util.checkArrayIntersection(arr1, arr2);
  */
 ```
 
@@ -778,7 +777,7 @@ res = await nw.db.selects({
  * @param {Array} arr
  * @returns {boolean} 是否为数组
  * @example
- * nw.util.isArray(arr);
+  nw.util.isArray(arr);
  */
 ```
 
@@ -790,7 +789,7 @@ res = await nw.db.selects({
  * @param {object} obj
  * @returns {object} 克隆后的对象
  * @example
- * nw.util.deepClone(obj);
+  nw.util.deepClone(obj);
  */
 ```
 
@@ -820,7 +819,7 @@ res = await nw.db.selects({
  * @param {Array} array
  * @returns {Array} 去重后的数组
  * @example
- * nw.util.uniqueArr(array);
+  nw.util.uniqueArr(array);
  */
 ```
 
@@ -833,10 +832,10 @@ res = await nw.db.selects({
  * @param {Object} treeProps 树结构配置 { id : "menu_id", children : "children" }
  * @returns {Array} 转换后的数组
  * @example
- * nw.util.treeToArray(treeData,{
- * id : "menu_id", // 自己的id字段,必填
- * parent_id : "parent_id", // 父级id字段,必填
- * children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
- * });
+  nw.util.treeToArray(treeData,{
+    id : "menu_id", // 自己的id字段,必填
+    parent_id : "parent_id", // 父级id字段,必填
+    children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
+  });
  */
 ```

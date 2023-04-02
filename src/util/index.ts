@@ -29,27 +29,27 @@ const util = {
    * @param {number} type 为0时格式为：2020-08-01 12:12:12 ， 为1时格式为:20200801121212
    * @returns {string} 返回字符串
    * @example
-   * nw.util.getFullTime(new Date(), 0);
-   * // 2020-08-01 12:12:12
-   * nw.util.getFullTime(new Date(), 1);
-   * // 20200801121212
-   * nw.util.getFullTime(1596278400000, 0);
-   * // 2020-08-01 12:12:12
-   * nw.util.getFullTime(1596278400000, 1);
-   * // 20200801121212
-   * nw.util.getFullTime("2020-08", 0);
-   * // 2020-08-01 12:12:12
-   * nw.util.getFullTime("2020-08", 1);
-   * // 20200801121212
-   * nw.util.getFullTime("2020-08-24", 0);
-   * // 2020-08-24 12:12:12
-   * nw.util.getFullTime("2020-08-24", 1);
-   * // 20200824121212
-   * nw.util.getFullTime("2020-08-24 12:12:12", 0);
-   * // 2020-08-24 12:12:12
-   * nw.util.getFullTime("2020-08-24 12:12:12", 1);
-   * // 20200824121212
-   */
+    nw.util.getFullTime(new Date(), 0);
+    // 2020-08-01 12:12:12
+    nw.util.getFullTime(new Date(), 1);
+    // 20200801121212
+    nw.util.getFullTime(1596278400000, 0);
+    // 2020-08-01 12:12:12
+    nw.util.getFullTime(1596278400000, 1);
+    // 20200801121212
+    nw.util.getFullTime("2020-08", 0);
+    // 2020-08-01 12:12:12
+    nw.util.getFullTime("2020-08", 1);
+    // 20200801121212
+    nw.util.getFullTime("2020-08-24", 0);
+    // 2020-08-24 12:12:12
+    nw.util.getFullTime("2020-08-24", 1);
+    // 20200824121212
+    nw.util.getFullTime("2020-08-24 12:12:12", 0);
+    // 2020-08-24 12:12:12
+    nw.util.getFullTime("2020-08-24 12:12:12", 1);
+    // 20200824121212
+  */
   getFullTime: (date: Date | number | string, type = 0): string => {
     console.log(typeof date);
 
@@ -115,8 +115,8 @@ const util = {
    * @param {string} type HTML HTML标记
    * @returns {boolean} 返回布尔值
    * @example
-   * nw.util.checkStr("123456", "mobile");
-   * // false
+    nw.util.checkStr("123456", "mobile");
+    // false
    */
   checkStr: (str: string, type: string) => {
     switch (type) {
@@ -183,7 +183,7 @@ const util = {
    * @param n 金额
    * @returns 转换后的金额
    * @example
-   * nw.util.priceFilter(100)
+    nw.util.priceFilter(100)
    */
   priceFilter: (n: string | number) => {
     if (typeof n == "string") {
@@ -199,10 +199,10 @@ const util = {
    * @param {object} 	obj2
    * @returns {object} 返回一个新的对象
    * @example
-   * nw.util.objectAssign({a:1,b:2},{b:3,c:4})
-   * // {a:1,b:3,c:4}
-   * nw.util.objectAssign({a:1,b:2},{b:3,c:4}) === {a:1,b:3,c:4}
-   * // false
+    nw.util.objectAssign({a:1,b:2},{b:3,c:4})
+    // {a:1,b:3,c:4}
+    nw.util.objectAssign({a:1,b:2},{b:3,c:4}) === {a:1,b:3,c:4}
+    // false
    */
   objectAssign: (obj1: object, obj2: object) => {
     return Object.assign(obj1, obj2);
@@ -214,15 +214,15 @@ const util = {
    * @param {object} obj
    * @returns {object} 返回一个新的对象
    * @example
-   * nw.util.copyObject({a:1,b:2})
-   * // {a:1,b:2}
-   * nw.util.copyObject({a:1,b:2}) === {a:1,b:2}
-   * // false
-   * nw.util.copyObject({a:1,b:2}) == {a:1,b:2}
-   * // false
-   * nw.util.copyObject({a:1,b:2}) === nw.util.copyObject({a:1,b:2})
-   * // false
-   */
+    nw.util.copyObject({a:1,b:2})
+    // {a:1,b:2}
+    nw.util.copyObject({a:1,b:2}) === {a:1,b:2}
+    // false
+    nw.util.copyObject({a:1,b:2}) == {a:1,b:2}
+    // false
+    nw.util.copyObject({a:1,b:2}) === nw.util.copyObject({a:1,b:2})
+    // false
+  */
   copyObject: (obj: object) => {
     return JSON.parse(JSON.stringify(obj));
   },
@@ -233,8 +233,8 @@ const util = {
    * @param {string} dateString
    * @returns {number} 返回一个时间戳
    * @example
-   * nw.util.toTimeLong("2020-08-08 12:12:12")
-   * // 1596862732000
+    nw.util.toTimeLong("2020-08-08 12:12:12")
+    // 1596862732000
    */
   toTimeLong: (dateString: string) => {
     if (!dateString) {
@@ -256,8 +256,8 @@ const util = {
    * @param {String} flag 判断标识,默认用id来判断,若flag传-1,代表不去除重复数据
    * @returns {Array} 返回一个新的数组
    * @example
-   * nw.util.arr_concat([{id:1,name:"张三"},{id:2,name:"李四"}],[{id:2,name:"李四"},{id:3,name:"王五"}])
-   * // [{id:1,name:"张三"},{id:2,name:"李四"},{id:3,name:"王五"}]
+    nw.util.arr_concat([{id:1,name:"张三"},{id:2,name:"李四"}],[{id:2,name:"李四"},{id:3,name:"王五"}])
+    // [{id:1,name:"张三"},{id:2,name:"李四"},{id:3,name:"王五"}]
    */
   arr_concat: (arr1: string | any[], arr2: any, flag: string | number) => {
     if (!flag) flag = "id"; // 默认用id来判断是否是同一个对象元素
@@ -286,8 +286,8 @@ const util = {
    * @param {string} name
    * @returns {any} 返回一个新的数组
    * @example
-   * nw.util.getData({a:{b:{c:1}}},"a.b.c")
-   * // 1
+    nw.util.getData({a:{b:{c:1}}},"a.b.c")
+    // 1
    */
   getData: (dataObj: object, name: string): any => {
     var newDataObj = JSON.parse(JSON.stringify(dataObj));
@@ -315,11 +315,11 @@ const util = {
    * @param {string} name
    * @param {any} object
    * @example
-   * nw.util.setData({a:{b:{c:1}}},"a.b.c",2)
-   * // {a:{b:{c:2}}}
-   * nw.util.setData({a:{b:{c:1}}},"a.b.c[0]",2)
-   * // {a:{b:{c:[2]}}}
-   */
+    nw.util.setData({a:{b:{c:1}}},"a.b.c",2)
+    // {a:{b:{c:2}}}
+    nw.util.setData({a:{b:{c:1}}},"a.b.c[0]",2)
+    // {a:{b:{c:[2]}}}
+  */
   setData: (dataObj: { [key: string]: any }, name: string, value: any) => {
     // 通过正则表达式查找路径数据
     const regex: RegExp = /([\w$]+)|\[(:\d)\]/g;
@@ -339,7 +339,7 @@ const util = {
    * @description 检测参数是否为空 其中 undefined、null、{}、[]、"" 均为空值 ,不要传布尔值
    * @param {any} value
    * @example
-   * nw.util.isNull(value);
+    nw.util.isNull(value);
    */
   isNull: (value: any) => {
     let key = false;
@@ -361,10 +361,10 @@ const util = {
    * @param {any} value
    * @returns {boolean}
    * @example
-   * nw.util.isNotNull(value);
-   * // true
-   * nw.util.isNotNull(undefined);
-   * // false
+    nw.util.isNotNull(value);
+    // true
+    nw.util.isNotNull(undefined);
+    // false
    */
   isNotNull: (value: any) => {
     return !util.isNull(value);
@@ -374,19 +374,19 @@ const util = {
    * @param {any} strS 传多个参数
    * @returns {boolean}
    * @example
-   * nw.util.isNotNullAll(value1,value2,value3);
-   * // true
-   * nw.util.isNotNullAll(value1,value2,undefined);
-   * // false
-   * nw.util.isNotNullAll(value1,value2,"");
-   * // false
-   * nw.util.isNotNullAll(value1,value2,[]);
-   * // false
-   * nw.util.isNotNullAll(value1,value2,{});
-   * // false
-   * nw.util.isNotNullAll(value1,value2,null);
-   * // false
-   */
+    nw.util.isNotNullAll(value1,value2,value3);
+    // true
+    nw.util.isNotNullAll(value1,value2,undefined);
+    // false
+    nw.util.isNotNullAll(value1,value2,"");
+    // false
+    nw.util.isNotNullAll(value1,value2,[]);
+    // false
+    nw.util.isNotNullAll(value1,value2,{});
+    // false
+    nw.util.isNotNullAll(value1,value2,null);
+    // false
+  */
   isNullOne: (...strS: any) => {
     let key = false;
     for (let i = 0; i < strS.length; i++) {
@@ -403,19 +403,19 @@ const util = {
    * @param {any} strS 传多个参数
    * @returns {boolean}
    * @example
-   * nw.util.isNullAll(value1,value2,value3);
-   * // false
-   * nw.util.isNullAll(value1,value2,undefined);
-   * // true
-   * nw.util.isNullAll(value1,value2,"");
-   * // true
-   * nw.util.isNullAll(value1,value2,[]);
-   * // true
-   * nw.util.isNullAll(value1,value2,{});
-   * // true
-   * nw.util.isNullAll(value1,value2,null);
-   * // true
-   */
+    nw.util.isNullAll(value1,value2,value3);
+    // false
+    nw.util.isNullAll(value1,value2,undefined);
+    // true
+    nw.util.isNullAll(value1,value2,"");
+    // true
+    nw.util.isNullAll(value1,value2,[]);
+    // true
+    nw.util.isNullAll(value1,value2,{});
+    // true
+    nw.util.isNullAll(value1,value2,null);
+    // true
+  */
   isNullAll: (...strS: any) => {
     let key = true;
     for (let i = 0; i < strS.length; i++) {
@@ -432,19 +432,19 @@ const util = {
    * @param {any} strS 传多个参数
    * @returns {boolean}
    * @example
-   * nw.util.isNotNullAll(value1,value2,value3);
-   * // true
-   * nw.util.isNotNullAll(value1,value2,undefined);
-   * // false
-   * nw.util.isNotNullAll(value1,value2,"");
-   * // false
-   * nw.util.isNotNullAll(value1,value2,[]);
-   * // false
-   * nw.util.isNotNullAll(value1,value2,{});
-   * // false
-   * nw.util.isNotNullAll(value1,value2,null);
-   * // false
-   */
+    nw.util.isNotNullAll(value1,value2,value3);
+    // true
+    nw.util.isNotNullAll(value1,value2,undefined);
+    // false
+    nw.util.isNotNullAll(value1,value2,"");
+    // false
+    nw.util.isNotNullAll(value1,value2,[]);
+    // false
+    nw.util.isNotNullAll(value1,value2,{});
+    // false
+    nw.util.isNotNullAll(value1,value2,null);
+    // false
+  */
   isNotNullAll: (...strS: any) => {
     return !util.isNullOne(...strS);
   },
@@ -455,10 +455,9 @@ const util = {
    * @param {string} value 值
    * @returns {Object} item
    * @example
-   * nw.util.getListItem([{"_id": "001"},{"_id": "002"}], "_id", "001");
-   * // {"_id": "001"}
-   *
-   */
+    nw.util.getListItem([{"_id": "001"},{"_id": "002"}], "_id", "001");
+    // {"_id": "001"}
+  */
   getListItem: (
     list: Array<object | any>,
     key: string,
@@ -479,11 +478,11 @@ const util = {
    * @param {string} key 键
    * @returns {Object} json
    * @example
-   * 如[{"_id":"001","name":"name1","sex":1},{"_id":"002","name":"name2","sex":2}]
-   * 转成
-   * {"001",{"_id":"001","name":"name1","sex":1},"002":{"_id":"002","name":"name2","sex":2}}
-   * nw.util.listToJson(list, "_id");
-   */
+    如[{"_id":"001","name":"name1","sex":1},{"_id":"002","name":"name2","sex":2}]
+    转成
+    {"001",{"_id":"001","name":"name1","sex":1},"002":{"_id":"002","name":"name2","sex":2}}
+    nw.util.listToJson(list, "_id");
+  */
   listToJson: (list: Array<any>, key: string): object => {
     let json: any = {};
     for (let i in list) {
@@ -498,11 +497,11 @@ const util = {
    * @param {string} str 随机数的字符集 "a-z,A-Z,0-9"
    * @returns {string} 随机数
    * @example
-   * nw.util.random(6);
-   * nw.util.random(6, "a-z,0-9");
-   * nw.util.random(6, "A-Z,0-9");
-   * nw.util.random(6, "a-z,A-Z,0-9");
-   */
+    nw.util.random(6);
+    nw.util.random(6, "a-z,0-9");
+    nw.util.random(6, "A-Z,0-9");
+    nw.util.random(6, "a-z,A-Z,0-9");
+  */
   random: (length: number, str: string) => {
     let s = "";
     let list = "123456789";
@@ -529,7 +528,7 @@ const util = {
    * @param {number} length 长度
    * @returns {string} 纯数字字符串id
    * @example
-   * nw.util.stringIdToNumberId(uid,6);
+    nw.util.stringIdToNumberId(uid,6);
    */
   stringIdToNumberId: (str: string, length: number): string => {
     let s: string = "";
@@ -550,16 +549,16 @@ const util = {
    * @param {number} weight 重量
    * @returns {number} 运费
    * @example
-   * freightsItem 运费模板
-   {
-       first_weight 						Integer 首重 单位KG,
-      first_weight_price 			Integer 首重 首重价格
-      continuous_weight 				Integer	续重 单位KG
-      continuous_weight_price 	Integer 续重价格 单位分 100 = 1元
-      max_weight								Integer 重量达到此值时,会多计算首重的价格,并少一次续重的价格 倍乘(相当于拆分多个包裹)
-  }
-  * weight	运费重量
-  * nw.util.calcFreights(freightsItem, weight);
+    freightsItem 运费模板
+  {
+      first_weight Integer 首重 单位KG,
+      first_weight_price Integer 首重 首重价格
+      continuous_weight Integer  续重 单位KG
+      continuous_weight_price Integer 续重价格 单位分 100 = 1元
+      max_weight Integer 重量达到此值时,会多计算首重的价格,并少一次续重的价格 倍乘(相当于拆分多个包裹)
+    }
+  weight 运费重量
+  nw.util.calcFreights(freightsItem, weight);
   */
   calcFreights: (freightsItem: any, weight: number) => {
     let {
@@ -616,7 +615,7 @@ const util = {
    * @param {Array} arr2 常量数组
    * @returns {boolean} 是否有交集
    * @example
-   * nw.util.checkArrayIntersection(arr1, arr2);
+    nw.util.checkArrayIntersection(arr1, arr2);
    */
   checkArrayIntersection: (arr1 = [], arr2 = []) => {
     let checkKey = false;
@@ -632,7 +631,7 @@ const util = {
    * @param {Array} arr
    * @returns {boolean} 是否为数组
    * @example
-   * nw.util.isArray(arr);
+    nw.util.isArray(arr);
    */
   isArray: (arr: Array<any>): boolean => {
     return Object.prototype.toString.call(arr) === "[object Array]";
@@ -642,7 +641,7 @@ const util = {
    * @param {object} obj
    * @returns {object} 克隆后的对象
    * @example
-   * nw.util.deepClone(obj);
+    nw.util.deepClone(obj);
    */
   deepClone: (obj: any) => {
     if (typeof obj !== "object" && typeof obj !== "function") {
@@ -721,7 +720,7 @@ const util = {
    * @param {Array} array
    * @returns {Array} 去重后的数组
    * @example
-   * nw.util.uniqueArr(array);
+    nw.util.uniqueArr(array);
    */
   uniqueArr: (array: Array<any>) => {
     let n = []; //一个新的临时数组
@@ -739,11 +738,11 @@ const util = {
    * @param {Object} treeProps 树结构配置 { id : "menu_id", children : "children" }
    * @returns {Array} 转换后的数组
    * @example
-   * nw.util.treeToArray(treeData,{
-   * id : "menu_id", // 自己的id字段,必填
-   * parent_id : "parent_id", // 父级id字段,必填
-   * children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
-   * });
+    nw.util.treeToArray(treeData,{
+      id : "menu_id", // 自己的id字段,必填
+      parent_id : "parent_id", // 父级id字段,必填
+      children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
+    });
    */
   treeToArray: (treeData: Array<any>, treeProps: object) => {
     let newTreeData = util.deepClone(treeData);
