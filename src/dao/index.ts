@@ -4,7 +4,6 @@ const db = cloud.database();
 const _ = db.command;
 const $ = _.aggregate;
 
-
 const timeOptions: Intl.DateTimeFormatOptions = {
   year: "numeric",
   month: "2-digit",
@@ -53,6 +52,7 @@ const Dao = {
       },
       cancelAddTime : true
     });
+    console.log(JSON.stringify(res))
     */
   add: async ({
     cancelAddTime,
@@ -127,7 +127,6 @@ const Dao = {
    *    _id:"1"
    *  }
    * });
-   *
    */
   del: async ({ dbName, whereJson }: { dbName: string; whereJson: object }) => {
     // 数据库查询开始----------------------------------------------------------
@@ -780,10 +779,102 @@ const Dao = {
     return res;
     // 数据库API结束----------------------------------------------------------
   },
+
+  /**
+   * findByWhereJson
+   * @description 根据whereJson查询对象
+   * @param {string} dbName  	表名
+   * @param {object} fieldJson 字段显示规则
+   * @param {object} whereJson 查询条件
+   * @returns res 返回值为单行记录
+   * @example
+    res = await nw.db.findByWhereJson({
+      dbName:"users",
+      fieldJson:{
+        token:0,
+        password:0,
+      },
+      whereJson:{
+        nickname:"nw"
+      }
+    });
+   */
+  findByWhereJson: async ({
+    dbName,
+    whereJson,
+    fieldJson,
+  }: {
+    dbName: string;
+    whereJson?: object;
+    fieldJson?: object;
+  }) => {
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      if (whereJson && JSON.stringify(whereJson) != "{}") {
+        let result: any = db.collection(dbName).where(whereJson);
+        if (fieldJson) {
+          result = result.field(fieldJson);
+        }
+        const res = await result.limit(1).get();
+
+        if (res.data && res.data.length > 0) {
+          return res.data[0];
+        } else {
+          return null;
+        }
+      } else {
+        console.error("whereJson条件不能为空");
+      }
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束-----------------------------------------------------------
+  },
+
+  /**
+   * 根据 _id 查询记录
+   * @description 根据 _id 查询记录
+   * @params {String} dbName  	表名
+   * @params {String} id   			id
+   * @params {Object} fieldJson 字段显示规则 只能指定要返回的字段或者不要返回的字段
+   * @returns res 返回值为单行记录
+   * @example
+   res = await nw.db.findById({
+      dbName:dbName,
+      id:_id,
+      fieldJson: {
+        _id: 0,
+        name: 0,
+      },
+    });
+   */
+  findById: async ({
+    dbName,
+    id,
+    fieldJson,
+  }: {
+    dbName: string;
+    id: string;
+    fieldJson?: object;
+  }) => {
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      let result: any = db.collection(dbName).doc(id);
+      if (fieldJson) {
+        result = result.field(fieldJson);
+      }
+      const res = await result.get();
+      return res.data[0];
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束-----------------------------------------------------------
+  },
 };
 
 export default Dao;
-export type Dao = typeof db;
 
 // 封装selectAll 分次获取全部数据 每次1000条
 async function selectAll(event: any) {

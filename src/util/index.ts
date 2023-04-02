@@ -117,7 +117,6 @@ const util = {
    * @example
    * nw.util.checkStr("123456", "mobile");
    * // false
-   *
    */
   checkStr: (str: string, type: string) => {
     switch (type) {
@@ -546,22 +545,22 @@ const util = {
     return s;
   },
   /**
-     * 计算运费
-     * @param {Object} freightsItem 运费模板
-     * @param {number} weight 重量
-     * @returns {number} 运费
-     * @example
-     * freightsItem 运费模板
-     {
-         first_weight 						Integer 首重 单位KG,
-        first_weight_price 			Integer 首重 首重价格
-        continuous_weight 				Integer	续重 单位KG
-        continuous_weight_price 	Integer 续重价格 单位分 100 = 1元
-        max_weight								Integer 重量达到此值时,会多计算首重的价格,并少一次续重的价格 倍乘(相当于拆分多个包裹)
-    }
-    * weight	运费重量
-    * nw.util.calcFreights(freightsItem, weight);
-    */
+   * 计算运费
+   * @param {Object} freightsItem 运费模板
+   * @param {number} weight 重量
+   * @returns {number} 运费
+   * @example
+   * freightsItem 运费模板
+   {
+       first_weight 						Integer 首重 单位KG,
+      first_weight_price 			Integer 首重 首重价格
+      continuous_weight 				Integer	续重 单位KG
+      continuous_weight_price 	Integer 续重价格 单位分 100 = 1元
+      max_weight								Integer 重量达到此值时,会多计算首重的价格,并少一次续重的价格 倍乘(相当于拆分多个包裹)
+  }
+  * weight	运费重量
+  * nw.util.calcFreights(freightsItem, weight);
+  */
   calcFreights: (freightsItem: any, weight: number) => {
     let {
       first_weight,
@@ -659,18 +658,18 @@ const util = {
     return o;
   },
   /**
-     * 数组结构转树形结构
-     * @param {Array} originalArrayData 原始数组
-     * @param {Object} treeProps 转换树形结构的属性
-     * @returns {Array} 转换后的树形结构
-     * @example
-    nw.util.arrayToTree(arrayData,{
-        id: "id",  // 自己的id字段,必填
-        parent_id: "pid", // 父级id字段,必填
-        children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
-        need_field : ["title"] // 除id、parent_id、children外显示的属性,可选,不填默认全部显示
-    });
-    */
+   * 数组结构转树形结构
+   * @param {Array} originalArrayData 原始数组
+   * @param {Object} treeProps 转换树形结构的属性
+   * @returns {Array} 转换后的树形结构
+   * @example
+  nw.util.arrayToTree(arrayData,{
+    id: "id",  // 自己的id字段,必填
+    parent_id: "pid", // 父级id字段,必填
+    children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
+    need_field : ["title"] // 除id、parent_id、children外显示的属性,可选,不填默认全部显示
+  });
+  */
   arrayToTree: (originalArrayData: Array<any>, treeProps: any): Array<any> => {
     let arrayData = util.deepClone(originalArrayData);
     let {
