@@ -1,57 +1,915 @@
 import cloud from "@lafjs/cloud";
+import { EJSON } from "bson";
 const db = cloud.database();
 const _ = db.command;
 const $ = _.aggregate;
+const timeOptions: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+};
+
+interface DataJson {
+  _add_time?: number;
+  _add_time_str?: string;
+  [key: string]: any; // 允许添加任意属性
+}
+
+type DataJsonArray = DataJson[];
+
+interface ForeignDB {
+  dbName: string;
+  foreignKey: string;
+  localKey: string;
+  as?: string;
+  limit?: number;
+  whereJson?: object;
+  fieldJson?: object;
+  sortArr?: Array<{ name: string; type?: string }>;
+}
 
 const Dao = {
   /**
-     * add(单条记录)
-     * @description insert into dbName (列1, 列2,...) values (值1, 值2,....)
-     * 注意:使用此函数添加的数据会自动加上_add_time(添加当前时间戳) 和 _add_time_str(当前时间字符串格式)
-     * @params {Object} event 请求参数
-     * event 请求参数 说明
-     * @params {String} dbName  	表名
-     * @params {String} dataJson  需要添加的数据(json格式)
-     * @params {String} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
-     * res 返回值为添加数据的id,添加失败,则返回null
-     * 调用示例:
-      res.id = await nw.baseDao.add({
-        dbName:dbName,
-        dataJson:{
-          "money": 1,
-          "kehuid": "001"
-        },
-        cancelAddTime : true
-      });
-     */
-  add: async (event: {
-    hasOwnProperty?: any;
-    cancelAddTime?: any;
-    dbName?: any;
-    dataJson?: any;
-    cloud?: any;
+   * add(单条记录)
+   * @description 将单条对象数据插入到集合中
+   * 注意:使用此函数添加的数据会自动加上_add_time(添加当前时间戳) 和 _add_time_str(当前时间字符串格式)
+   * event 请求参数 说明
+   * @param {string} dbName  	表名
+   * @param {object} dataJson  需要添加的数据(json格式)
+   * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
+   * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+   * @example 
+    res.id = await nw.db.add({
+      dbName:dbName,
+      dataJson:{
+        "_id": "1",
+        "money": 1,
+        "kehuid": "001"
+      },
+      cancelAddTime : true
+    });
+    */
+  add: async ({
+    cancelAddTime,
+    dbName,
+    dataJson,
+  }: {
+    cancelAddTime?: boolean;
+    dbName: string;
+    dataJson: DataJson;
   }) => {
     // 数据库查询开始----------------------------------------------------------
-    const { dbName, dataJson } = event;
-    if (
-      !dataJson._add_time &&
-      (!event.hasOwnProperty("cancelAddTime") || !event.cancelAddTime)
-    ) {
+    if (!dataJson._add_time && !cancelAddTime) {
       const date = new Date();
       dataJson._add_time = date.getTime();
-      dataJson._add_time_str = date.toLocaleString("zh-CN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
+      dataJson._add_time_str = date.toLocaleString("zh-CN", timeOptions);
     }
-    // const res = await db.collection(dbName).add(dataJson)
     const res = await cloud.mongo.db.collection(dbName).insertOne(dataJson);
     // 数据库查询结束----------------------------------------------------------
     return res.insertedId ? res.insertedId : null;
   },
+
+  /**
+   * adds(多条记录)
+   * @description 将数组对象插入到集合中
+   * @param {string} dbName  	表名
+   * @param {Array.<object>} dataJson  需要添加的数据(json数组格式)
+   * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
+   * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+   * @example
+   * res.id = await nw.db.adds({
+   *  dbName:dbName,
+   *  dataJson:[]
+   * });
+   */
+  adds: async ({
+    dbName,
+    dataJson,
+    cancelAddTime,
+  }: {
+    cancelAddTime?: boolean;
+    dbName: string;
+    dataJson: DataJsonArray;
+  }): Promise<number | null> => {
+    // 数据库查询开始----------------------------------------------------------
+    const date = new Date();
+    const _add_time = date.getTime();
+    const _add_time_str = date.toLocaleString("zh-CN", timeOptions);
+    for (const i in dataJson) {
+      if (
+        !dataJson[i]._add_time &&
+        (typeof cancelAddTime === "undefined" || !cancelAddTime)
+      ) {
+        dataJson[i]._add_time = _add_time;
+        dataJson[i]._add_time_str = _add_time_str;
+      }
+    }
+    const res = await cloud.mongo.db.collection(dbName).insertMany(dataJson);
+    // 数据库查询结束----------------------------------------------------------
+    return res.insertedCount ?? null;
+  },
+
+  /**
+   * del(根据条件删除记录)
+   * @description 批量删除符合条件的记录,可批量删除
+   * @param {string} dbName  	表名
+   * @param {object} whereJson 条件
+   * @returns {number} res 返回值为删除的记录数量
+   * @example
+   * res.num = await nw.db.del({
+   *  dbName:dbName,
+   *  whereJson:{
+   *    _id:"1"
+   *  }
+   * });
+   *
+   */
+  del: async ({ dbName, whereJson }: { dbName: string; whereJson: object }) => {
+    // 数据库查询开始----------------------------------------------------------
+    let num = 0;
+    if (whereJson && JSON.stringify(whereJson) !== "{}") {
+      const res: any = await db
+        .collection(dbName)
+        .where(whereJson)
+        .remove({ multi: true });
+      if (res) {
+        num = res.deleted;
+      } else {
+        console.error(res.errMsg);
+        num = -1;
+      }
+    } else {
+      console.error("whereJson条件不能为空");
+    }
+    return num;
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+   * update(根据条件修改记录)
+   * @description 批量修改符合条件的记录,可批量修改
+   * @param {string} dbName  	表名
+   * @param {object} whereJson 条件
+   * @param {object} dataJson  需要修改的数据(json格式)
+   * @returns {number} res 返回值为修改的记录数量
+   * @example
+   * res.num = await nw.db.update({
+   *  dbName:dbName,
+   *  whereJson:{
+        _add_time: _.gte(time).lte(time + 1000),
+      },
+      dataJson:{
+        kehuid:"001"
+      }
+    });
+   */
+  update: async ({
+    dbName,
+    whereJson,
+    dataJson,
+  }: {
+    dbName: string;
+    whereJson: object;
+    dataJson: object;
+  }) => {
+    // 数据库查询开始----------------------------------------------------------
+    let num = 0;
+    if (whereJson && EJSON.stringify(whereJson) !== "{}") {
+      const res: any = await db
+        .collection(dbName)
+        .where(whereJson)
+        .update(dataJson, { multi: true });
+      if (res) {
+        num = res.deleted;
+      } else {
+        console.error((res as any).errMsg);
+        num = -1;
+      }
+    } else {
+      console.error("whereJson条件不能为空");
+    }
+    return num;
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+   * select(根据条件查询记录)
+   * @description 根据条件查询记录
+   * @param {string} dbName  	表名
+   * @param {boolean} getCount 是否获取符合条件的总数量,默认不获取
+   * @param {number} pageIndex 第几页,默认第1页
+   * @param {number} pageSize  每页显示数量，默认10条
+   * @param {object} whereJson 条件
+   * @param {object} fieldJson 字段显示规则,要么都为0,要么都为1
+   * @param {Array.<object>} sortArr 排序规则 1升序 -1降序
+   * @returns {object} res 返回值
+   * @returns {Array.<object>} res.rows 列表
+   * @returns {boolean} res.hasMore 分页需要 true 还有下一页 false 无下一页
+   * @returns {number} res.pageIndex 当前所在页数
+   * @returns {number} res.pageSize  每页显示数量
+   * @example
+   * res = await nw.db.select({
+   *   dbName:dbName,
+   *   getCount:true,
+   *   pageIndex:1,
+   *   pageSize:100,
+   *   whereJson:{
+   *     _add_time: _.gte(time).lte(time + 1000),
+   *   },
+   *   fieldJson:{
+   *     _id:1,
+   *     kehuid:1,
+   *   },
+   *   sortArr:[{
+   *     _add_time:-1
+   *   }]
+   * });
+   */
+  select: async ({
+    dbName,
+    whereJson,
+    sortArr,
+    fieldJson,
+    pageSize = 10,
+    pageIndex = 1,
+    getCount = false,
+  }: {
+    dbName: string;
+    whereJson?: object;
+    sortArr?: { name: string; type: "asc" | "desc" }[];
+    fieldJson?: object;
+    pageSize?: number;
+    pageIndex?: number;
+    getCount?: boolean;
+  }) => {
+    if (!whereJson || JSON.stringify(whereJson) == "{}") {
+      whereJson = { _id: _.neq("___") };
+    }
+    // 数据库查询开始----------------------------------------------------------
+    pageSize = pageSize > 0 ? pageSize : 999999999;
+    if (pageSize > 1000 || pageSize < 1) {
+      // 若查询大于1000记录,则使用selectAll
+      return await selectAll({
+        dbName,
+        whereJson,
+        sortArr,
+        fieldJson,
+        pageSize,
+        pageIndex,
+        getCount,
+      });
+    }
+    // 获取select对象开始-----------------------------------------------------------
+    const selectDataObj = await getSelectData({
+      dbName,
+      whereJson,
+      sortArr,
+      fieldJson,
+      pageSize,
+      pageIndex,
+      getCount,
+    });
+    let result: any = selectDataObj.result; // 结果集
+    const hasMore = selectDataObj.hasMore; // 是否还有数据
+    const total = selectDataObj.total; // 总记录数
+    // 获取select对象结束-----------------------------------------------------------
+    result = result.skip((pageIndex - 1) * pageSize).limit(pageSize);
+    // 对查询结果排序开始-----------------------------------------------------------
+    if (sortArr && JSON.stringify(sortArr) != "{}") {
+      for (const i in sortArr) {
+        const g = sortArr[i];
+        const name = g.name;
+        const type = g.type;
+        result = result.orderBy(name, type);
+      }
+    }
+    // 对查询结果排序结束-----------------------------------------------------------
+    // 字段显示规则开始-----------------------------------------------------------
+    if (fieldJson && JSON.stringify(fieldJson) != "{}") {
+      result = result.field(fieldJson);
+    }
+    // 字段显示规则结束-----------------------------------------------------------
+    const res = await result.get();
+    const json: any = {
+      rows: res.data,
+      hasMore,
+      total,
+      code: 0,
+      pageIndex,
+      pageSize,
+    };
+    return json;
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+   * count(根据条件查询记录数量)
+   * @description 根据条件查询记录数量
+   * @param {string} dbName  	表名
+   * @param {object} whereJson 条件
+   * @returns {number|null} res 返回值，失败返回null
+   * @example
+   * res = await nw.db.count({
+   *  dbName:dbName,
+   *  whereJson:{
+   *    _add_time: _.gte(time).lte(time + 1000),
+   *  }
+   * });
+   */
+  count: async ({
+    dbName,
+    whereJson,
+  }: {
+    dbName: string;
+    whereJson?: object;
+  }) => {
+    if (!whereJson || JSON.stringify(whereJson) == "{}") {
+      whereJson = { _id: _.neq("___") };
+    }
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      const res = await db.collection(dbName).where(whereJson).count(); // 集合总数
+      return res.total; // 总记录数
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  },
+
+  /**
+   * sum(根据条件求和)
+   * @description 根据条件求和
+   * 注意:
+   * 1.字段必须是数值类型
+   * 2.若数据条数大于10万以上,可能会有问题
+   * @param {string} dbName  	表名
+   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {object} whereJson 条件
+   * @returns {number|null} res 返回值，失败返回null
+   * @example
+   * res = await nw.db.sum({
+   *  dbName:dbName,
+   *  fieldName:"money",
+   *   whereJson:{
+   *    _add_time: _.gte(time).lte(time + 1000),
+   *  }
+   * });
+   */
+  sum: async ({
+    dbName,
+    fieldName,
+    whereJson,
+  }: {
+    dbName: string;
+    fieldName: string;
+    whereJson?: object;
+  }) => {
+    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+      whereJson = { _id: _.neq("___") };
+    }
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      const res = await db
+        .collection(dbName)
+        .aggregate()
+        .match(whereJson)
+        // .skip(0)
+        // .limit(100000)
+        .group({
+          _id: null,
+          num: $.sum("$" + fieldName),
+        })
+        .end();
+      return res.data[0].num;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+   * avg(根据条件求平均值)
+   * @description 根据条件求平均值
+   * 注意:
+   * 1.字段必须是数值类型
+   * 2.若数据条数大于10万以上,可能会有问题
+   * @param {string} dbName  	表名
+   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {object} whereJson 条件
+   * @returns {number|null} res 返回值，失败返回null
+   * @example
+   * res = await nw.db.avg({
+   *  dbName:dbName,
+   *  fieldName:"money",
+   *  whereJson:{
+   *    _add_time: _.gte(time).lte(time + 1000),
+   *  }
+   * });
+   */
+  avg: async ({
+    dbName,
+    fieldName,
+    whereJson,
+  }: {
+    dbName: string;
+    fieldName: string;
+    whereJson?: object;
+  }) => {
+    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+      whereJson = { _id: _.neq("___") };
+    }
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      const res = await db
+        .collection(dbName)
+        .aggregate()
+        .match(whereJson)
+        .group({
+          _id: null,
+          num: $.avg("$" + fieldName),
+        })
+        .end();
+      return res.data[0].num;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+   * max(根据条件求最大值)
+   * @description 根据条件求最大值
+   * 注意:
+   * 1.字段必须是数值类型
+   * 2.若数据条数大于10万以上,可能会有问题
+   * @param {string} dbName  	表名
+   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {object} whereJson 条件
+   * @returns {number|null} res 返回值，失败返回null
+   * @example
+   * res = await nw.db.max({
+   *  dbName:dbName,
+   *  fieldName:"money",
+   *  whereJson:{
+   *     _add_time: _.gte(time).lte(time + 1000),
+   *  }
+   * });
+   */
+  max: async ({
+    dbName,
+    fieldName,
+    whereJson,
+  }: {
+    dbName: string;
+    fieldName: string;
+    whereJson?: object;
+  }) => {
+    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+      whereJson = { _id: _.neq("___") };
+    }
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      const res = await db
+        .collection(dbName)
+        .aggregate()
+        .match(whereJson)
+        .group({
+          _id: null,
+          num: $.max("$" + fieldName),
+        })
+        .end();
+      return res.data[0].num;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+   * min(根据条件求最小值)
+   * @description 根据条件求最小值
+   * 注意:
+   * 1.字段必须是数值类型
+   * 2.若数据条数大于10万以上,可能会有问题
+   * @param {string} dbName  	表名
+   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {object} whereJson 条件
+   * @returns {number|null} res 返回值，失败返回null
+   * @example
+   * res = await nw.db.min({
+   *  dbName:dbName,
+   *  fieldName:"money",
+   *  whereJson:{
+   *    _add_time: _.gte(time).lte(time + 1000),
+   *  }
+   * });
+   */
+  min: async ({
+    dbName,
+    fieldName,
+    whereJson,
+  }: {
+    dbName: string;
+    fieldName: string;
+    whereJson?: object;
+  }) => {
+    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+      whereJson = { _id: _.neq("___") };
+    }
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      const res = await db
+        .collection(dbName)
+        .aggregate()
+        .match(whereJson)
+        .group({
+          _id: null,
+          num: $.min("$" + fieldName),
+        })
+        .end();
+      return res.data[0].num;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束----------------------------------------------------------
+  },
+
+  /**
+    * selects(万能联表,多表连查)
+    * @description 万能联表,多表连查
+    * @param {string} dbName  	主表名
+    * @param {boolean} getCount   是否获取总条数
+    * @param {number} pageIndex   页码
+    * @param {number} pageSize   每页条数
+    * @param {object} whereJson   主表where条件
+    * @param {object} fieldJson   主表字段显示规则
+    * @param {array} sortArr   主表排序规则
+    * @param {array} foreignDB   副表列表
+    * @returns {object|null} res 返回值，失败返回null
+    * @example
+      res = await nw.baseDao.selects({
+        dbName: "uni-id-users",
+      getCount: false,
+      pageIndex: 1,
+      pageSize: 10,
+      // 主表where条件
+      whereJson: {
+
+      },
+      // 主表字段显示规则
+      fieldJson: {
+        token: false,
+        password: false,
+      },
+      // 主表排序规则
+      sortArr: [{ "name": "_id","type": "desc" }],
+      // 副表列表
+      foreignDB: [
+        {
+          dbName: "order",
+          localKey:"_id",
+          foreignKey: "user_id",
+          as: "orderList",
+          limit: 10,
+          // 副表where条件
+          whereJson: {},
+          // 副表字段显示规则
+          fieldJson: {},
+          // 副表排序规则
+          sortArr: [{ "name": "time","type": "desc" }],
+        },
+        {
+          dbName: "vip",
+          localKey:"_id",
+          foreignKey: "user_id",
+          as: "vipInfo",
+          limit: 1, // 当limit = 1时，以对象形式返回，否则以数组形式返回
+        }
+      ]
+      });
+    */
+  selects: async function ({
+    dbName,
+    whereJson = {},
+    pageIndex = 1,
+    pageSize = 10,
+    getCount = false,
+    sortArr = [],
+    fieldJson = {},
+    foreignDB = [],
+  }: {
+    dbName: string;
+    whereJson?: object;
+    pageIndex?: number;
+    pageSize?: number;
+    getCount?: boolean;
+    sortArr?: Array<object>;
+    fieldJson?: object;
+    foreignDB?: ForeignDB[];
+  }) {
+    // 获取全部的as
+    let ass: any = [];
+    for (const l in foreignDB) {
+      const { as } = foreignDB[l];
+      ass.push(as);
+    }
+    // 数据库API开始----------------------------------------------------------
+    if (JSON.stringify(whereJson) === "{}") {
+      whereJson = {
+        _id: _.neq("___"),
+      };
+    }
+    if (pageSize == -1) {
+      pageIndex = 1;
+      pageSize = 999999999;
+      getCount = false;
+    }
+    let total = 0;
+    let hasMore = false; // 提示前端是否还有数据
+
+    if (getCount) {
+      const countResult = await db.collection(dbName).where(whereJson).count(); // 集合总数
+      total = countResult.total; // 总记录数
+      const totalPage = Math.ceil(total / pageSize);
+      if (pageIndex < totalPage) {
+        hasMore = true;
+      }
+    }
+    const res: any = {};
+    let result: any = db.collection(dbName).aggregate();
+    // 主表where条件
+    if (whereJson && EJSON.stringify(whereJson) !== "{}") {
+      result = result.match(whereJson);
+    }
+    // 主表字段显示规则
+    if (fieldJson && EJSON.stringify(fieldJson) !== "{}") {
+      result = result.project(fieldJson);
+    }
+    // 主表排序规则
+    if (sortArr && EJSON.stringify(sortArr) !== "[]") {
+      const sortJson: any = {};
+      for (const i in sortArr) {
+        const g: any = sortArr[i];
+        const name = g.name;
+        let type = g.type;
+        if (type == undefined || type == "" || type == "asc") {
+          type = 1;
+        } else {
+          type = -1;
+        }
+        sortJson[name] = type;
+      }
+      result = result.sort(sortJson);
+    }
+    // 分页数据
+    result = result.skip((pageIndex - 1) * pageSize).limit(pageSize);
+    // 连表开始-----------------------------------------------------------
+    for (const i in foreignDB) {
+      let {
+        dbName,
+        foreignKey,
+        localKey,
+        as,
+        limit,
+        whereJson,
+        fieldJson,
+        sortArr,
+      } = foreignDB[i];
+      if (!as) as = dbName;
+      let pipelineJson: any = $.pipeline().match(
+        _.expr($.and([$.eq(["$" + foreignKey, "$$localKey" + localKey])]))
+      );
+      // 副表where条件
+      if (whereJson && EJSON.stringify(whereJson) !== "{}") {
+        pipelineJson = pipelineJson.match(whereJson);
+      }
+      // 副表限制查询条数,若值为1,则返回的是对象,否则返回的是数组
+      if (limit) {
+        pipelineJson = pipelineJson.limit(limit);
+      }
+      // 副表字段显示规则
+      if (fieldJson && EJSON.stringify(fieldJson) !== "{}") {
+        pipelineJson = pipelineJson.project(fieldJson);
+      }
+      // 副表排序规则
+      if (sortArr && EJSON.stringify(sortArr) !== "[]") {
+        const sortJson: any = {};
+        for (const i in sortArr) {
+          const sortItem = sortArr[i];
+          const name = sortItem.name;
+          let type: any = sortItem.type;
+          if (type == undefined || type == "" || type == "asc") {
+            type = 1; // 升序
+          } else {
+            type = -1; // 降序
+          }
+          sortJson[name] = type;
+        }
+        pipelineJson = pipelineJson.sort(sortJson);
+      }
+      pipelineJson = pipelineJson.done();
+      const letJson: any = {};
+      letJson["localKey" + localKey] = "$" + localKey;
+      const lookupJson = {
+        from: dbName,
+        let: letJson,
+        pipeline: pipelineJson,
+        as: as,
+      };
+      result = result.lookup(lookupJson);
+    }
+    // 连表结束-----------------------------------------------------------
+    // 获取结果
+    // return 111
+    result = await result.end();
+    let rows: any = result.data;
+    for (const i in rows) {
+      for (const j in foreignDB) {
+        const { as, limit }: { as?: any; limit?: any } = foreignDB[j];
+        if (limit === 1) {
+          if (rows[i][as] && rows[i][as].length > 0) {
+            rows[i][as] = rows[i][as][0];
+          } else {
+            rows[i][as] = {};
+          }
+        }
+      }
+    }
+
+    //去掉都为[]的了连表数据
+    for (const ii in rows) {
+      for (const jj in foreignDB) {
+        const { as }: { as?: any } = foreignDB[jj];
+        if (Array.isArray(rows[ii][as]) && rows[ii][as].length === 0) {
+          delete result.data[ii][as];
+        }
+      }
+    }
+    rows = rows.filter((data: any) => {
+      var NeedDelNum = [];
+      for (let iii in ass) {
+        let as = ass[iii];
+        if (data[as].length == 0) {
+          NeedDelNum.push(iii);
+        }
+        if (NeedDelNum.length == ass.length) {
+          return false;
+        }
+      }
+      return true;
+    });
+    ass = [];
+    res.code = 0;
+    if (getCount) {
+      res.hasMore = hasMore;
+      res.total = total;
+    } else {
+      res.total = rows ? rows.length : 0;
+      res.hasMore = total >= pageSize;
+    }
+    res.rows = rows; // 两表连接合并后的数据
+    return res;
+    // 数据库API结束----------------------------------------------------------
+  },
 };
+
 export default Dao;
+
+// 封装selectAll 分次获取全部数据 每次1000条
+async function selectAll(event: any) {
+  const dbName = event.dbName; // 表名
+  const json: any = {};
+  // 数据库查询开始----------------------------------------------------------
+  const MAX_LIMIT = 1000; // 最大一次获取1000条数据
+
+  let pageSize = event.pageSize ? event.pageSize : 10; // 默认10条数据
+  pageSize = pageSize > 0 ? pageSize : 999999999;
+
+  // 获取select对象开始-----------------------------------------------------------
+  const selectDataObj = await getSelectData(event);
+  const {
+    result, // 结果集
+    hasMore, // 是否还有数据
+    total, // 总记录数
+    getCount, // 是否需要分页
+    pageIndex, // 当前页码
+  } = selectDataObj;
+  // 获取select对象结束-----------------------------------------------------------
+
+  // 计算需分几次获取数据
+  let t1 = total;
+  if (pageSize < total) {
+    t1 = pageSize;
+  }
+  const batchTimes = Math.ceil(t1 / MAX_LIMIT);
+
+  // 承载所有读操作的 promise 的数组
+  const tasks = [];
+  const n0 = (pageIndex - 1) * pageSize; // 数据起始值
+  const n0_2 = n0 + pageSize;
+  for (let i = 0; i < batchTimes; i++) {
+    const n1 = n0 + i * MAX_LIMIT;
+    let n2 = MAX_LIMIT;
+    const n2_2 = n1 + MAX_LIMIT;
+    if (n2_2 > n0_2) {
+      n2 = n0_2 - n1;
+    }
+    const promise = result.skip(n1).limit(n2).get();
+    tasks.push(promise);
+  }
+  // 等待所有
+  let res: any = {};
+  try {
+    res = (await Promise.all(tasks)).reduce((acc: any, cur) => ({
+      data: acc.data.concat(cur.data),
+      errMsg: acc.errMsg,
+    }));
+  } catch (e) {
+    console.error("selectAll-异常", event, e);
+    res = {
+      data: [],
+    };
+  }
+
+  json.rows = res.data; // 总结果集
+  json.code = 0; // 请求成功
+  json.hasMore = hasMore; // 是否还有数据
+  json.pageIndex = pageIndex;
+  json.pageSize = pageSize;
+  if (getCount) {
+    json.total = total;
+  } else {
+    json.total = res.data ? res.data.length : 0;
+  }
+  return json;
+  // 数据库查询结束----------------------------------------------------------
+}
+
+// 获取select需要的参数
+async function getSelectData(event: any) {
+  let { dbName, whereJson } = event;
+  if (!whereJson || JSON.stringify(whereJson) == "{}") {
+    whereJson = { _id: _.neq("___") };
+  }
+  // 封装数据参数开始----------------------------------------------------------
+  let pageIndex = event.pageIndex ? event.pageIndex : 1; // 默认第一页开始
+  let pageSize = event.pageSize ? event.pageSize : 10; // 默认10条数据
+  let getCount = event.getCount ? event.getCount : false; // 是否获取总数量
+  if (pageSize == -1) {
+    pageIndex = 1;
+    pageSize = 999999999;
+    getCount = true;
+  }
+  const sortArr = event.sortArr; // 排序数组
+  const fieldJson = event.fieldJson; // 需要返回的字段,若field不传,则默认返回全部字段
+  let total = 0;
+  let hasMore = false; // 提示前端是否还有数据
+  // console.log("whereJson:",whereJson);
+  if (getCount) {
+    const countResult = await db.collection(dbName).where(whereJson).count(); // 集合总数
+    total = countResult.total; // 总记录数
+    const totalPage = Math.ceil(total / pageSize);
+    if (pageIndex < totalPage) {
+      hasMore = true;
+    }
+  }
+  let result: any = db.collection(dbName);
+  if (fieldJson) {
+    result = result.field(fieldJson);
+  }
+  if (whereJson) {
+    result = result.where(whereJson);
+  }
+  if (sortArr) {
+    // 这里用数组形式是为了有序
+    for (const i in sortArr) {
+      const g = sortArr[i];
+      const name = g.name;
+      let type = g.type;
+      if (type == undefined || type == "") {
+        type = "asc";
+      }
+      result = result.orderBy(name, type);
+    }
+  }
+  return {
+    result: result, // 结果集
+    dbName: dbName, // 数据库表名
+    whereJson: whereJson, // 判断条件
+    pageIndex: pageIndex, // 当前页码
+    pageSize: pageSize, // 每页大小
+    getCount: getCount, // 是否需要分页
+    sortArr: sortArr, // 需要排序对象
+    fieldJson: fieldJson, // 参数选择对象
+    total: total, // 总记录数
+    hasMore: hasMore, // 是否还有数据
+  };
+  // 封装数据参数结束----------------------------------------------------------
+}
