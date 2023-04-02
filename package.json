@@ -1,6 +1,6 @@
 {
   "name": "nw-lafjs",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "nw for Laf",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
