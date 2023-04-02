@@ -1,6 +1,6 @@
 {
   "name": "nw-lafjs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "nw for Laf",
   "main": "./dist/index.js",
   "homepage": "",
