@@ -1,0 +1,22 @@
+{
+  "name": "nw",
+  "version": "1.0.0",
+  "description": "nw for Laf",
+  "main": "./dist/index.js",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "test": "babel-node --presets env test.js",
+    "build": "rollup -c build/rollup.config.js --environment NODE_ENV:production && node script/sync-package.js",
+    "dev": "rollup -c build/rollup.config.js && node script/sync-package.js",
+    "publish": "npm version patch && node script/sync-package.js && cp README.md ./dist && npm publish ./dist"
+  },
+  "author": "nightwhite",
+  "license": "ISC",
+  "dependencies": {
+    "@lafjs/cloud": "^1.0.0-beta.4"
+  }
+}
