@@ -1,9 +1,9 @@
-import Dao from "./dao";
+import db from "./dao";
 import util from "./util";
 
 interface Nw {
   // 数据库baseDao
-  Dao: typeof Dao;
+  db: typeof db;
   // 公共util
   util: typeof util;
   /**
@@ -15,8 +15,8 @@ interface Nw {
 }
 
 const nw: Nw = {
-  // 数据库baseDao
-  Dao,
+  // 数据库db操作
+  db,
   // 公共util
   util,
   /**
