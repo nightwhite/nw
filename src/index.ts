@@ -28,7 +28,7 @@ interface Nw {
 
 const nw: Nw = {
   // 数据库db操作
-  // db,
+  db,
   // 公共util
   util,
   /**
