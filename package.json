@@ -9,10 +9,8 @@
     "url": ""
   },
   "scripts": {
-    "test": "babel-node --presets env test.js",
-    "build": "rollup -c build/rollup.config.js --environment NODE_ENV:production && node script/sync-package.js",
-    "dev": "rollup -c build/rollup.config.js && node script/sync-package.js",
-    "publish": "npm version patch && node script/sync-package.js && cp README.md ./dist && npm publish ./dist"
+    "build": "tsc -p tsconfig.json",
+    "pub": "npm version patch && npm run build &&  npm publish"
   },
   "author": "nightwhite",
   "license": "ISC",
