@@ -1,5 +1,5 @@
 {
-  "name": "nw",
+  "name": "nw-lafCloud",
   "version": "1.0.1",
   "description": "nw for Laf",
   "main": "./dist/index.js",
