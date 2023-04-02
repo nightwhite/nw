@@ -3,6 +3,8 @@ import { EJSON } from "bson";
 const db = cloud.database();
 const _ = db.command;
 const $ = _.aggregate;
+
+
 const timeOptions: Intl.DateTimeFormatOptions = {
   year: "numeric",
   month: "2-digit",
@@ -781,6 +783,7 @@ const Dao = {
 };
 
 export default Dao;
+export type Dao = typeof db;
 
 // 封装selectAll 分次获取全部数据 每次1000条
 async function selectAll(event: any) {

@@ -3,6 +3,7 @@
   "version": "1.0.5",
   "description": "nw for Laf",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "homepage": "",
   "repository": {
     "type": "git",
