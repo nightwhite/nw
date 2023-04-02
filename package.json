@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "pub": "npm version patch && npm run build &&  npm publish"
+    "pub": "npm version patch && npm run build && uglifyjs dist/index.js -o dist/index.js -c -m && npm publish --access public"
   },
   "author": "nightwhite",
   "license": "ISC",
