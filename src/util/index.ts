@@ -748,33 +748,35 @@ const util = {
    */
   treeToArray: (treeData: Array<any>, treeProps: object) => {
     let newTreeData = util.deepClone(treeData);
-    return util.treeToArrayFn(newTreeData, treeProps);
+    return treeToArrayFn(newTreeData, treeProps);
   },
-  treeToArrayFn: (
-    treeData: Array<any>,
-    treeProps: any = {},
-    arr: any = [],
-    current_parent_id?: any
-  ) => {
-    let {
-      id = "_id",
-      parent_id = "parent_id",
-      children = "children",
-      deleteChildren = true,
-    } = treeProps;
-    for (let i in treeData) {
-      let item: any = treeData[i];
-      if (current_parent_id) item[parent_id] = current_parent_id;
-      arr.push(item);
-      if (item[children] && item[children].length > 0) {
-        arr = util.treeToArrayFn(item[children], treeProps, arr, item[id]);
-      }
-      if (deleteChildren) {
-        delete item[children];
-      }
-    }
-    return arr;
-  },
+
 };
 
 export default util;
+
+function treeToArrayFn (
+  treeData: Array<any>,
+  treeProps: any = {},
+  arr: any = [],
+  current_parent_id?: any
+)  {
+  let {
+    id = "_id",
+    parent_id = "parent_id",
+    children = "children",
+    deleteChildren = true,
+  } = treeProps;
+  for (let i in treeData) {
+    let item: any = treeData[i];
+    if (current_parent_id) item[parent_id] = current_parent_id;
+    arr.push(item);
+    if (item[children] && item[children].length > 0) {
+      arr = treeToArrayFn(item[children], treeProps, arr, item[id]);
+    }
+    if (deleteChildren) {
+      delete item[children];
+    }
+  }
+  return arr;
+}
