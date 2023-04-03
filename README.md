@@ -222,6 +222,8 @@ res = await nw.db.selects({
 
 ### 7、根据whereJson查询对象(findByWhereJson)
 
+不能分页，分页请用select
+
 ```js
 /**
  * findByWhereJson
