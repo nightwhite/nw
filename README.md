@@ -7,7 +7,7 @@
 添加最新版nw-lafjs依赖后，在云函数引入
 
 ```js
-import nw from 'nw-laf' 
+import nw from 'nw-lafjs' 
 
 export async function main(ctx: FunctionContext) {
   ...
@@ -395,7 +395,7 @@ res = await nw.db.selects({
  * @returns {Object} 返回新的对象
  * @example
  * nw.util.deleteObjectKeys({ name: "张三", age: 18 }, ["age"]);
- * // { name: "张三" }
+  // { name: "张三" }
  */
 ```
 
