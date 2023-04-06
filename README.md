@@ -43,7 +43,7 @@ export async function main(ctx: FunctionContext) {
   */
 ```
 
-### 2.批量新增多条数据(add)
+### 2.批量新增多条数据(adds)
 
 支持自定义_id
 
@@ -297,7 +297,7 @@ res = await nw.db.selects({
  * 1.字段必须是数值类型
  * 2.若数据条数大于10万以上,可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+ * @param {string} fieldName   需求和的字段名(必须是数值类型的字段)
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
@@ -321,7 +321,7 @@ res = await nw.db.selects({
  * 1.字段必须是数值类型
  * 2.若数据条数大于10万以上,可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+ * @param {string} fieldName   需求平均值的字段名(必须是数值类型的字段)
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
@@ -345,7 +345,7 @@ res = await nw.db.selects({
  * 1.字段必须是数值类型
  * 2.若数据条数大于10万以上,可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+ * @param {string} fieldName   需求最大值的字段名(必须是数值类型的字段)
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example
@@ -369,7 +369,7 @@ res = await nw.db.selects({
  * 1.字段必须是数值类型
  * 2.若数据条数大于10万以上,可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+ * @param {string} fieldName   需求最小值的字段名(必须是数值类型的字段)
  * @param {object} whereJson 条件
  * @returns {number|null} res 返回值，失败返回null
  * @example

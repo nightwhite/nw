@@ -69,9 +69,14 @@ const Dao = {
       dataJson._add_time = date.getTime();
       dataJson._add_time_str = date.toLocaleString("zh-CN", timeOptions);
     }
-    const res = await cloud.mongo.db.collection(dbName).insertOne(dataJson);
+    if (!dataJson._id){
+      const res = await db.collection(dbName).add(dataJson);
+      return res.id ? res.id : null;
+    }else{
+      const res = await cloud.mongo.db.collection(dbName).insertOne(dataJson);
+      return res.insertedId ? res.insertedId : null;
+    }
     // 数据库查询结束----------------------------------------------------------
-    return res.insertedId ? res.insertedId : null;
   },
 
   /**
@@ -100,6 +105,8 @@ const Dao = {
     const date = new Date();
     const _add_time = date.getTime();
     const _add_time_str = date.toLocaleString("zh-CN", timeOptions);
+    let arr_id:any; // 带ID的数据
+    let arr:any; // 不带ID的数据
     for (const i in dataJson) {
       if (
         !dataJson[i]._add_time &&
@@ -108,10 +115,24 @@ const Dao = {
         dataJson[i]._add_time = _add_time;
         dataJson[i]._add_time_str = _add_time_str;
       }
+      if (!dataJson[i]._id) {
+        arr.push(dataJson[i]);
+      } else {
+        arr_id.push(dataJson[i]);
+      }
     }
-    const res = await cloud.mongo.db.collection(dbName).insertMany(dataJson);
+    let arr_id_num = 0;
+    let arr_num = [];
+    if (arr_id.length > 0) {
+      const res = await cloud.mongo.db.collection(dbName).insertMany(arr_id);
+      arr_id_num = res.insertedCount;
+    }
+    if (arr.length > 0) {
+      const res:any = await db.collection(dbName).add(arr, { multi: true });
+      arr_num = res.insertedCount;
+    }
+    return arr_id_num + arr_num;
     // 数据库查询结束----------------------------------------------------------
-    return res.insertedCount ?? null;
   },
 
   /**
