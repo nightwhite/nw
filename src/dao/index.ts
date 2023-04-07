@@ -1,5 +1,4 @@
 import cloud from "@lafjs/cloud";
-import { EJSON } from "bson";
 const db = cloud.database();
 const _ = db.command;
 const $ = _.aggregate;
@@ -73,6 +72,7 @@ const Dao = {
       const res = await db.collection(dbName).add(dataJson);
       return res.id ? res.id : null;
     }else{
+      dataJson._id = dataJson._id.toString();
       const res = await cloud.mongo.db.collection(dbName).insertOne(dataJson);
       return res.insertedId ? res.insertedId : null;
     }
@@ -105,7 +105,6 @@ const Dao = {
     const date = new Date();
     const _add_time = date.getTime();
     const _add_time_str = date.toLocaleString("zh-CN", timeOptions);
-    let arr_id:any; // 带ID的数据
     let arr:any; // 不带ID的数据
     for (const i in dataJson) {
       if (
@@ -115,23 +114,15 @@ const Dao = {
         dataJson[i]._add_time = _add_time;
         dataJson[i]._add_time_str = _add_time_str;
       }
-      if (!dataJson[i]._id) {
-        arr.push(dataJson[i]);
-      } else {
-        arr_id.push(dataJson[i]);
+      // 如果有_id,则转换为字符串
+      if (dataJson[i]._id) {
+        dataJson[i]._id = dataJson[i]._id.toString();
       }
+      arr.push(dataJson[i]);
     }
-    let arr_id_num = 0;
-    let arr_num = [];
-    if (arr_id.length > 0) {
-      const res = await cloud.mongo.db.collection(dbName).insertMany(arr_id);
-      arr_id_num = res.insertedCount;
-    }
-    if (arr.length > 0) {
-      const res:any = await db.collection(dbName).add(arr, { multi: true });
-      arr_num = res.insertedCount;
-    }
-    return arr_id_num + arr_num;
+    const res = await cloud.mongo.db.collection(dbName).insertMany(arr);
+    const arr_num = res.insertedCount;
+    return arr_num;
     // 数据库查询结束----------------------------------------------------------
   },
 
@@ -199,7 +190,7 @@ const Dao = {
   }) => {
     // 数据库查询开始----------------------------------------------------------
     let num = 0;
-    if (whereJson && EJSON.stringify(whereJson) !== "{}") {
+    if (whereJson && JSON.stringify(whereJson) !== "{}") {
       const res: any = await db
         .collection(dbName)
         .where(whereJson)
@@ -389,7 +380,7 @@ const Dao = {
     fieldName: string;
     whereJson?: object;
   }) => {
-    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+    if (!whereJson || JSON.stringify(whereJson) == "{}") {
       whereJson = { _id: _.neq("___") };
     }
     // 数据库查询开始----------------------------------------------------------
@@ -441,7 +432,7 @@ const Dao = {
     fieldName: string;
     whereJson?: object;
   }) => {
-    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+    if (!whereJson || JSON.stringify(whereJson) == "{}") {
       whereJson = { _id: _.neq("___") };
     }
     // 数据库查询开始----------------------------------------------------------
@@ -491,7 +482,7 @@ const Dao = {
     fieldName: string;
     whereJson?: object;
   }) => {
-    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+    if (!whereJson || JSON.stringify(whereJson) == "{}") {
       whereJson = { _id: _.neq("___") };
     }
     // 数据库查询开始----------------------------------------------------------
@@ -541,7 +532,7 @@ const Dao = {
     fieldName: string;
     whereJson?: object;
   }) => {
-    if (!whereJson || EJSON.stringify(whereJson) == "{}") {
+    if (!whereJson || JSON.stringify(whereJson) == "{}") {
       whereJson = { _id: _.neq("___") };
     }
     // 数据库查询开始----------------------------------------------------------
@@ -667,15 +658,15 @@ const Dao = {
     const res: any = {};
     let result: any = db.collection(dbName).aggregate();
     // 主表where条件
-    if (whereJson && EJSON.stringify(whereJson) !== "{}") {
+    if (whereJson && JSON.stringify(whereJson) !== "{}") {
       result = result.match(whereJson);
     }
     // 主表字段显示规则
-    if (fieldJson && EJSON.stringify(fieldJson) !== "{}") {
+    if (fieldJson && JSON.stringify(fieldJson) !== "{}") {
       result = result.project(fieldJson);
     }
     // 主表排序规则
-    if (sortArr && EJSON.stringify(sortArr) !== "[]") {
+    if (sortArr && JSON.stringify(sortArr) !== "[]") {
       const sortJson: any = {};
       for (const i in sortArr) {
         const g: any = sortArr[i];
@@ -709,7 +700,7 @@ const Dao = {
         _.expr($.and([$.eq(["$" + foreignKey, "$$localKey" + localKey])]))
       );
       // 副表where条件
-      if (whereJson && EJSON.stringify(whereJson) !== "{}") {
+      if (whereJson && JSON.stringify(whereJson) !== "{}") {
         pipelineJson = pipelineJson.match(whereJson);
       }
       // 副表限制查询条数,若值为1,则返回的是对象,否则返回的是数组
@@ -717,11 +708,11 @@ const Dao = {
         pipelineJson = pipelineJson.limit(limit);
       }
       // 副表字段显示规则
-      if (fieldJson && EJSON.stringify(fieldJson) !== "{}") {
+      if (fieldJson && JSON.stringify(fieldJson) !== "{}") {
         pipelineJson = pipelineJson.project(fieldJson);
       }
       // 副表排序规则
-      if (sortArr && EJSON.stringify(sortArr) !== "[]") {
+      if (sortArr && JSON.stringify(sortArr) !== "[]") {
         const sortJson: any = {};
         for (const i in sortArr) {
           const sortItem = sortArr[i];
