@@ -894,23 +894,22 @@ const Dao = {
    * @param {string} id  	查询条件
    * @returns res 更新结果
    * @example
-    res = await nw.db.updateMany({
-      dbName:dbName,
-      dataArr: [
-        {
-        _id: "5f7b9b9b5f9b9b0001e8b1a1",
+  res = await nw.db.updateMany({
+    dbName:dbName,
+    dataArr: [
+      {
+      _id: "5f7b9b9b5f9b9b0001e8b1a1",
+      name: "nw",
+      },
+      {
+        _id: "5f7b9b9b5f9b9b0001e8b1a2",
         name: "nw",
-        },
-        {
-          _id: "5f7b9b9b5f9b9b0001e8b1a2",
-          name: "nw",
-        },
-      ],
-      id: "_id", // 如果是别的字段，可以自己指定，如id: "name"
-      upsert: true, //默认为false
-    });
-   * */
-
+      },
+    ],
+    id: "_id", // 如果是别的字段，可以自己指定，如id: "name"
+    upsert: true, //默认为false
+  });
+  */
   updateMany: async ({  
     dbName,
     dataArr,
@@ -934,10 +933,12 @@ const Dao = {
             update['_id'] = obj[key].toString();
           }
         });
+        delete update._id;
+        const updateWithoutId = Object.assign({}, update);
         ops.push({
           updateOne: {
             filter: { [id]: obj[id] },
-            update: { $set: update },
+            update: { $set: updateWithoutId },
             upsert: upsert,
           },
         });

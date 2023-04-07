@@ -268,7 +268,7 @@ res = await nw.db.selects({
   */
 ```
 
-### 9.根据条件查询记录数量(count)
+### 9、根据条件查询记录数量(count)
 
 ```js
  /**
@@ -287,7 +287,7 @@ res = await nw.db.selects({
  */
 ```
 
-### 10.根据条件求和(sum)
+### 10、根据条件求和(sum)
 
 ```js
 /**
@@ -311,7 +311,7 @@ res = await nw.db.selects({
  */
 ```
 
-### 11.根据条件求平均值(avg)
+### 11、根据条件求平均值(avg)
 
 ```js
 /**
@@ -335,7 +335,7 @@ res = await nw.db.selects({
  */
 ```
 
-### 12.根据条件求最大值(max)
+### 12、根据条件求最大值(max)
 
 ```js
 /**
@@ -359,7 +359,7 @@ res = await nw.db.selects({
  */
 ```
 
-### 13.根据条件求最小值(min)
+### 13、根据条件求最小值(min)
 
 ```js
 /**
@@ -381,6 +381,36 @@ res = await nw.db.selects({
    }
   });
  */
+```
+
+### 14、根据数组对象批量更新表(updateMany)
+
+```js
+/**
+ * 根据根据数组对象批量更新
+ * @description 根据 根据数组对象批量更新
+ * @param {string} dbName  表名
+ * @param {array} dataArr  需要更新的数据数组
+ * @param {boolean} upsert  没找到符合条件的是否自动插入一条新数据
+ * @param {string} id  查询条件
+ * @returns res 更新结果
+ * @example
+res = await nw.db.updateMany({
+  dbName:dbName,
+  dataArr: [
+    {
+      _id: "5f7b9b9b5f9b9b0001e8b1a1",
+      name: "nw",
+    },
+    {
+      _id: "5f7b9b9b5f9b9b0001e8b1a2",
+      name: "nw",
+    },
+  ],
+  id: "_id", // 如果是别的字段，可以自己指定，如id: "name"
+  upsert: true, //默认为false
+});
+*/
 ```
 
 ## 工具库
