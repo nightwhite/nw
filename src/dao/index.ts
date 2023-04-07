@@ -1,4 +1,5 @@
 import cloud from "@lafjs/cloud";
+import { ObjectId } from 'mongodb';
 const db = cloud.database();
 const _ = db.command;
 const $ = _.aggregate;
@@ -884,6 +885,75 @@ const Dao = {
     }
     // 数据库查询结束-----------------------------------------------------------
   },
+   /**
+   * 根据根据数组对象批量更新
+   * @description 根据 根据数组对象批量更新
+   * @param {string} dbName  	表名
+   * @param {array} dataArr  	数据数组
+   * @param {boolean} upsert  	没找到符合条件的是否自动插入一条新数据
+   * @param {string} id  	查询条件
+   * @returns res 更新结果
+   * @example
+    res = await nw.db.updateMany({
+      dbName:dbName,
+      dataArr: [
+        {
+        _id: "5f7b9b9b5f9b9b0001e8b1a1",
+        name: "nw",
+        },
+        {
+          _id: "5f7b9b9b5f9b9b0001e8b1a2",
+          name: "nw",
+        },
+      ],
+      id: "_id", // 如果是别的字段，可以自己指定，如id: "name"
+      upsert: true, //默认为false
+    });
+   * */
+
+  updateMany: async ({  
+    dbName,
+    dataArr,
+    upsert = false,
+    id,
+  }: {
+    dbName: string;
+    dataArr: Array<any>;
+    upsert?: boolean;
+    id: string;
+  }) => {
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      console.log(id);
+      const bulkOps = dataArr.reduce((ops, obj) => {
+        const update: any = {};
+        Object.keys(obj).forEach(key => {
+          if (key !== '_id') {
+            update[key] = obj[key];
+          } else {
+            update['_id'] = obj[key].toString();
+          }
+        });
+        ops.push({
+          updateOne: {
+            filter: { [id]: obj[id] },
+            update: { $set: update },
+            upsert: upsert,
+          },
+        });
+        return ops;
+      }, []);
+  
+      const result = await cloud.mongo.db.collection(dbName).bulkWrite(bulkOps);
+      return result
+    }
+    catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束-----------------------------------------------------------
+  }
+
 };
 
 export default Dao;
