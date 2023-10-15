@@ -878,7 +878,8 @@ const Dao = {
         result = result.field(fieldJson);
       }
       const res = await result.get();
-      return res.data[0];
+      // return res.data[0];
+      return res.data;
     } catch (e) {
       console.error(e);
       return null;
