@@ -2,17 +2,17 @@ import { log } from "console";
 import db from "./dao";
 import util from "./util";
 
-interface Nw {
+export interface NwType {
   /**
    * db
-   * @description 数据库db操作
+   * @description 数据库 db 操作
    * @example
    * await nw.db.add({ name: "张三" });
    */
   db?: typeof db;
   /**
    * util
-   * @description util工具包
+   * @description util 工具包
    * @example
    * nw.util.deleteObjectKeys({ name: "张三", age: 18 }, ["age"]);
    */
@@ -26,10 +26,10 @@ interface Nw {
   
 }
 
-const nw: Nw = {
-  // 数据库db操作
+const nw: NwType = {
+  // 数据库 db 操作
   db,
-  // 公共util
+  // 公共 util
   util,
   /**
    * test
@@ -38,7 +38,7 @@ const nw: Nw = {
    */
   test: async (event?: any) => {
     console.log("nw-lafjs");
-    return '这是test的返回';
+    return '这是 test 的返回';
   },
 };
 
