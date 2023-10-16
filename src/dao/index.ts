@@ -846,6 +846,58 @@ const Dao = {
   },
 
   /**
+   * findListByWhereJson
+   * @description 根据whereJson查询多条记录（不分页）
+   * @param {string} dbName  	表名
+   * @param {object} fieldJson 字段显示规则
+   * @param {object} whereJson 查询条件
+   * @returns res 返回值为多行记录
+   * @example
+    res = await nw.db.findListByWhereJson({
+      dbName:"users",
+      fieldJson:{
+        token:0,
+        password:0,
+      },
+      whereJson:{
+        nickname:"nw"
+      }
+    });
+   */
+  findListByWhereJson: async ({
+    dbName,
+    whereJson,
+    fieldJson,
+  }: {
+    dbName: string;
+    whereJson?: object;
+    fieldJson?: object;
+  }) => {
+    // 数据库查询开始----------------------------------------------------------
+    try {
+      if (whereJson && JSON.stringify(whereJson) != "{}") {
+        let result: any = db.collection(dbName).where(whereJson);
+        if (fieldJson) {
+          result = result.field(fieldJson);
+        }
+        const res = await result.get();
+
+        if (res.data && res.data.length > 0) {
+          return res.data;
+        } else {
+          return null;
+        }
+      } else {
+        console.error("whereJson条件不能为空");
+      }
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    // 数据库查询结束-----------------------------------------------------------
+  },
+
+  /**
    * 根据 _id 查询记录
    * @description 根据 _id 查询记录
    * @params {String} dbName  	表名
@@ -878,7 +930,8 @@ const Dao = {
         result = result.field(fieldJson);
       }
       const res = await result.get();
-      return res.data[0];
+      // return res.data[0];
+      return res.data;
     } catch (e) {
       console.error(e);
       return null;
