@@ -1,9 +1,9 @@
 name: Node.js Package
 
 on:
-  push:
+  pull_request:
     branches:
-      - master
+      - main
  
 jobs:
   publish-npm:
