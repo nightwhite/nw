@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "pub": "npm view nw-lafjs version | xargs npm --no-git-tag-version version && git add -A && git commit -m 'c' && npm version patch && npm run build && uglifyjs dist/index.js -o dist/index.js -c -m && uglifyjs dist/dao/index.js -o dist/dao/index.js -c -m && uglifyjs dist/util/index.js -o dist/util/index.js -c -m && npm publish --access public --force"
+    "pub": "npm view nw-lafjs version | xargs npm --no-git-tag-version version && git add -A && git commit -m 'c' && npm version patch && npm run build && uglifyjs dist/index.js -o dist/index.js -c -m && uglifyjs dist/dao/index.js -o dist/dao/index.js -c -m && uglifyjs dist/util/index.js -o dist/util/index.js -c -m && npm publish --access public"
   },
   "author": "nightwhite",
   "license": "ISC",
