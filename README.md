@@ -242,7 +242,10 @@ res = await nw.db.selects({
     },
     whereJson:{
       nickname:"nw"
-    }
+    },
+    sortArr:[{
+      _add_time: asc
+    }]
   });
   */
 ```
