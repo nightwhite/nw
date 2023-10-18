@@ -218,7 +218,7 @@ const Dao = {
    * @param {number} pageSize  每页显示数量，默认10条
    * @param {object} whereJson 条件
    * @param {object} fieldJson 字段显示规则,要么都为0,要么都为1
-   * @param {Array.<object>} sortArr 排序规则 1升序 -1降序
+   * @param {Array.<object>} sortArr 排序规则 asc升序 desc降序
    * @returns {object} res 返回值
    * @returns {Array.<object>} res.rows 列表
    * @returns {boolean} res.hasMore 分页需要 true 还有下一页 false 无下一页
@@ -799,6 +799,7 @@ const Dao = {
    * @param {string} dbName  	表名
    * @param {object} fieldJson 字段显示规则
    * @param {object} whereJson 查询条件
+   * @param {Array.<object>} sortArr 排序规则 asc升序 desc降序
    * @returns res 返回值为单行记录
    * @example
     res = await nw.db.findByWhereJson({
@@ -815,19 +816,33 @@ const Dao = {
   findByWhereJson: async ({
     dbName,
     whereJson,
+    sortArr,
     fieldJson,
   }: {
     dbName: string;
     whereJson?: object;
+    sortArr?: { name: string; type: "asc" | "desc" }[];
     fieldJson?: object;
   }) => {
     // 数据库查询开始----------------------------------------------------------
     try {
       if (whereJson && JSON.stringify(whereJson) != "{}") {
         let result: any = db.collection(dbName).where(whereJson);
-        if (fieldJson) {
+        // 对查询结果排序开始-----------------------------------------------------------
+        if (sortArr && JSON.stringify(sortArr) != "{}") {
+          for (const i in sortArr) {
+            const g = sortArr[i];
+            const name = g.name;
+            const type = g.type;
+            result = result.orderBy(name, type);
+          }
+        }
+        // 对查询结果排序结束-----------------------------------------------------------
+        // 字段显示规则开始-----------------------------------------------------------
+        if (fieldJson && JSON.stringify(fieldJson) != "{}") {
           result = result.field(fieldJson);
         }
+        // 字段显示规则结束-----------------------------------------------------------
         const res = await result.limit(1).get();
 
         if (res.data && res.data.length > 0) {
@@ -851,6 +866,7 @@ const Dao = {
    * @param {string} dbName  	表名
    * @param {object} fieldJson 字段显示规则
    * @param {object} whereJson 查询条件
+   * @param {Array.<object>} sortArr 排序规则 asc升序 desc降序
    * @returns res 返回值为多行记录
    * @example
     res = await nw.db.findListByWhereJson({
@@ -867,19 +883,33 @@ const Dao = {
   findListByWhereJson: async ({
     dbName,
     whereJson,
+    sortArr,
     fieldJson,
   }: {
     dbName: string;
     whereJson?: object;
+    sortArr?: { name: string; type: "asc" | "desc" }[];
     fieldJson?: object;
   }) => {
     // 数据库查询开始----------------------------------------------------------
     try {
       if (whereJson && JSON.stringify(whereJson) != "{}") {
         let result: any = db.collection(dbName).where(whereJson);
-        if (fieldJson) {
+        // 对查询结果排序开始-----------------------------------------------------------
+        if (sortArr && JSON.stringify(sortArr) != "{}") {
+          for (const i in sortArr) {
+            const g = sortArr[i];
+            const name = g.name;
+            const type = g.type;
+            result = result.orderBy(name, type);
+          }
+        }
+        // 对查询结果排序结束-----------------------------------------------------------
+        // 字段显示规则开始-----------------------------------------------------------
+        if (fieldJson && JSON.stringify(fieldJson) != "{}") {
           result = result.field(fieldJson);
         }
+        // 字段显示规则结束-----------------------------------------------------------
         const res = await result.get();
 
         if (res.data && res.data.length > 0) {
