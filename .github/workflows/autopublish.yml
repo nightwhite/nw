@@ -1,0 +1,35 @@
+name: Node.js Package
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+ 
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR merge status
+        id: check_pr
+        run: echo ::set-output name=merged::${{ github.event.pull_request.merged }}
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "18.x"
+          registry-url: https://registry.npmjs.org/
+      - run: npm install -g typescript uglify-js
+      - run: npm install
+      - name: 设置 Git
+        env:
+          EMAIL: ${{ secrets.GIT_EMAIL }}
+          NAME: ${{ secrets.GIT_NAME }}
+        run: |
+          git config --global user.email "${EMAIL}"
+          git config --global user.name "${NAME}"
+      - name: Publish to NPM
+        if: ${{ github.event.pull_request.merged == true }}
+        run: npm run pub
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,10 +1,10 @@
 # 使用说明
 
-仅适用于1.0版本的Laf
+仅适用于 1.0 版本的 Laf
 
-## Laf云函数使用
+## Laf 云函数使用
 
-添加最新版nw-lafjs依赖后，在云函数引入
+添加最新版 nw-lafjs 依赖后，在云函数引入
 
 ```js
 import nw from 'nw-lafjs' 
@@ -15,7 +15,7 @@ export async function main(ctx: FunctionContext) {
 
 ## 数据库
 
-### 1.新增单条数据(add)
+### 1.新增单条数据 (add)
 
 支持自定义_id
 
@@ -23,12 +23,12 @@ export async function main(ctx: FunctionContext) {
 /**
  * add(单条记录)
  * @description 将单条对象数据插入到集合中
- * 注意:使用此函数添加的数据会自动加上_add_time(添加当前时间戳) 和 _add_time_str(当前时间字符串格式)
+ * 注意：使用此函数添加的数据会自动加上_add_time(添加当前时间戳) 和 _add_time_str(当前时间字符串格式)
  * event 请求参数 说明
  * @param {string} dbName   表名
- * @param {object} dataJson  需要添加的数据(json格式)
+ * @param {object} dataJson  需要添加的数据 (json 格式)
  * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
- * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+ * @returns {string|null} res 返回值为添加数据的 id，添加失败，则返回 null
  * @example 
   res.id = await nw.db.add({
     dbName:dbName,
@@ -43,7 +43,7 @@ export async function main(ctx: FunctionContext) {
   */
 ```
 
-### 2.批量新增多条数据(adds)
+### 2.批量新增多条数据 (adds)
 
 支持自定义_id
 
@@ -52,9 +52,9 @@ export async function main(ctx: FunctionContext) {
  * adds(多条记录)
  * @description 将数组对象插入到集合中
  * @param {string} dbName   表名
- * @param {Array.<object>} dataJson  需要添加的数据(json数组格式)
+ * @param {Array.<object>} dataJson  需要添加的数据 (json 数组格式)
  * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
- * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+ * @returns {string|null} res 返回值为添加数据的 id，添加失败，则返回 null
  * @example
   res.id = await nw.db.adds({
     dbName:dbName,
@@ -63,12 +63,12 @@ export async function main(ctx: FunctionContext) {
   */
 ```
 
-### 3.根据条件删除记录(del)
+### 3.根据条件删除记录 (del)
 
 ```js
 /**
  * del(根据条件删除记录)
- * @description 批量删除符合条件的记录,可批量删除
+ * @description 批量删除符合条件的记录，可批量删除
  * @param {string} dbName   表名
  * @param {object} whereJson 条件
  * @returns {number} res 返回值为删除的记录数量
@@ -82,15 +82,15 @@ export async function main(ctx: FunctionContext) {
  */
 ```
 
-### 4.根据条件批量修改记录(update)
+### 4.根据条件批量修改记录 (update)
 
 ```js
 /**
  * update(根据条件修改记录)
- * @description 批量修改符合条件的记录,可批量修改
+ * @description 批量修改符合条件的记录，可批量修改
  * @param {string} dbName   表名
  * @param {object} whereJson 条件
- * @param {object} dataJson  需要修改的数据(json格式)
+ * @param {object} dataJson  需要修改的数据 (json 格式)
  * @returns {number} res 返回值为修改的记录数量
  * @example
   res.num = await nw.db.update({
@@ -105,19 +105,19 @@ export async function main(ctx: FunctionContext) {
   */
 ```
 
-### 5.根据条件分页查询记录(select)
+### 5.根据条件分页查询记录 (select)
 
 ```js
 /**
  * select(根据条件查询记录)
  * @description 根据条件查询记录
  * @param {string} dbName  表名
- * @param {boolean} getCount 是否获取符合条件的总数量,默认不获取
- * @param {number} pageIndex 第几页,默认第1页
- * @param {number} pageSize  每页显示数量，默认10条
+ * @param {boolean} getCount 是否获取符合条件的总数量，默认不获取
+ * @param {number} pageIndex 第几页，默认第 1 页
+ * @param {number} pageSize  每页显示数量，默认 10 条
  * @param {object} whereJson 条件
- * @param {object} fieldJson 字段显示规则,要么都为0,要么都为1
- * @param {Array.<object>} sortArr 排序规则 1升序 -1降序
+ * @param {object} fieldJson 字段显示规则，要么都为 0，要么都为 1
+ * @param {Array.<object>} sortArr 排序规则 asc 升序 desc 降序
  * @returns {object} res 返回值
  * @returns {Array.<object>} res.rows 列表
  * @returns {boolean} res.hasMore 分页需要 true 还有下一页 false 无下一页
@@ -137,52 +137,52 @@ export async function main(ctx: FunctionContext) {
       kehuid:1,
     },
     sortArr:[{
-      _add_time:-1
+      _add_time: asc
     }]
   });
  */
 ```
 
-### 6.万能联表查询(selects)
+### 6.万能联表查询 (selects)
 
 ```js
 /**
-* selects(万能联表,多表连查)
+* selects(万能联表，多表连查)
 * @params {Object} event 请求参数
 * event 请求参数 说明
 * @params {esm} cloud   (必填)lafjs-cloud
-* @params {String} dbName   (必填)表名
-* @params {Object} whereJson (可选)主表where条件
-* @params {Number} pageIndex (可选,默认1)第几页
-* @params {Number} pageSize  (可选,默认10)每页显示数量
-* @params {Number} getCount  (可选,默认false)true返回关联查询前主表查询总数量,false返回rows的数量
-* @params {Object} fieldJson (可选)主表字段显示规则,只能指定要返回的字段或者不要返回的字段
-* @params {Array(Object)} sortArr (可选)主表排序规则
-* @params {Array(Object)} foreignDB (可选)连表规则
+* @params {String} dbName   (必填) 表名
+* @params {Object} whereJson (可选) 主表 where 条件
+* @params {Number} pageIndex (可选，默认 1) 第几页
+* @params {Number} pageSize  (可选，默认 10) 每页显示数量
+* @params {Number} getCount  (可选，默认 false)true 返回关联查询前主表查询总数量，false 返回 rows 的数量
+* @params {Object} fieldJson (可选) 主表字段显示规则，只能指定要返回的字段或者不要返回的字段
+* @params {Array(Object)} sortArr (可选) 主表排序规则
+* @params {Array(Object)} foreignDB (可选) 连表规则
 * foreignDB 参数说明 数组内每一个对象代表一个连表规则
-* @params {String} dbName (必填)副表表名
-* @params {String} localKey (必填)主表外键名
-* @params {String} foreignKey (必填)副表外键名
-* @params {Number} limit (可选)关联查询的数量,1时为对象,大于1为数组
-* @params {String} as  (必填)副表连表结果的别名
-* @params {Object} whereJson  (可选)副表 where 条件
-* @params {Object} fieldJson  (可选)副表字段显示规则
-* @params {Array(Object)} sortArr  (可选)副表排序规则
+* @params {String} dbName (必填) 副表表名
+* @params {String} localKey (必填) 主表外键名
+* @params {String} foreignKey (必填) 副表外键名
+* @params {Number} limit (可选) 关联查询的数量，1 时为对象，大于 1 为数组
+* @params {String} as  (必填) 副表连表结果的别名
+* @params {Object} whereJson  (可选) 副表 where 条件
+* @params {Object} fieldJson  (可选) 副表字段显示规则
+* @params {Array(Object)} sortArr  (可选) 副表排序规则
 * res 返回值
-* @params {Number} code 0代表查询成功
-* @params {Number} total getCount为true返回关联查询前主表查询总数量,false返回rows的数量
+* @params {Number} code 0 代表查询成功
+* @params {Number} total getCount 为 true 返回关联查询前主表查询总数量，false 返回 rows 的数量
 * @params {Array(Object)} rows 列表
 * @params {Boolean} hasMore 分页需要 true 还有下一页 false 无下一页
 * @params {Number} pageIndex 当前所在页数
 * @params {Number} pageSize  每页显示数量
-* 调用示例:
+* 调用示例：
 res = await nw.db.selects({
   cloud:cloud,
   dbName: "users",
   getCount: false,
   pageIndex: 1,
   pageSize: 10,
-  // 主表where条件
+  // 主表 where 条件
   whereJson: {
 
   },
@@ -196,12 +196,12 @@ res = await nw.db.selects({
   // 副表列表
   foreignDB: [
     {
-      dbName: "order",//副表order
+      dbName: "order",//副表 order
       localKey:"_id",
       foreignKey: "user_id",
       as: "orderList",
       limit: 10,
-      // 副表where条件
+      // 副表 where 条件
       whereJson: {},
       // 副表字段显示规则
       fieldJson: {},
@@ -209,7 +209,7 @@ res = await nw.db.selects({
       sortArr: [{ "name": "time","type": "desc" }],
     },
     {
-      dbName: "vip",//副表vip
+      dbName: "vip",//副表 vip
       localKey:"_id",
       foreignKey: "user_id",
       as: "vipInfo",
@@ -220,17 +220,18 @@ res = await nw.db.selects({
 */
 ```
 
-### 7、根据whereJson查询对象(findByWhereJson)
+### 7、根据 whereJson 查询对象 (findByWhereJson)
 
-不能分页，分页请用select
+不能分页，分页请用 select
 
 ```js
 /**
  * findByWhereJson
- * @description 根据whereJson查询对象
+ * @description 根据 whereJson 查询对象
  * @param {string} dbName  表名
  * @param {object} fieldJson 字段显示规则
  * @param {object} whereJson 查询条件
+ * @param {Array.<object>} sortArr 排序规则 asc 升序 desc 降序
  * @returns res 返回值为单行记录
  * @example
   res = await nw.db.findByWhereJson({
@@ -241,12 +242,40 @@ res = await nw.db.selects({
     },
     whereJson:{
       nickname:"nw"
-    }
+    },
+    sortArr:[{
+      _add_time: asc
+    }]
   });
   */
 ```
 
-### 8、根据 _id 查询记录(findById)
+### 8、根据 whereJson 查询多条记录（不分页）
+
+```js
+/**
+   * findListByWhereJson
+   * @description 根据 whereJson 查询多条记录（不分页）
+   * @param {string} dbName  	表名
+   * @param {object} fieldJson 字段显示规则
+   * @param {object} whereJson 查询条件
+   * @param {Array.<object>} sortArr 排序规则 asc 升序 desc 降序
+   * @returns res 返回值为多行记录
+   * @example
+    res = await nw.db.findListByWhereJson({
+      dbName:"users",
+      fieldJson:{
+        token:0,
+        password:0,
+      },
+      whereJson:{
+        nickname:"nw"
+      }
+    });
+   */
+  ```
+
+### 9、根据 _id 查询记录 (findById)
 
 ```js
 /**
@@ -268,7 +297,7 @@ res = await nw.db.selects({
   */
 ```
 
-### 9、根据条件查询记录数量(count)
+### 10、根据条件查询记录数量 (count)
 
 ```js
  /**
@@ -276,7 +305,7 @@ res = await nw.db.selects({
  * @description 根据条件查询记录数量
  * @param {string} dbName  表名
  * @param {object} whereJson 条件
- * @returns {number|null} res 返回值，失败返回null
+ * @returns {number|null} res 返回值，失败返回 null
  * @example
   res = await nw.db.count({
    dbName:dbName,
@@ -287,19 +316,19 @@ res = await nw.db.selects({
  */
 ```
 
-### 10、根据条件求和(sum)
+### 11、根据条件求和 (sum)
 
 ```js
 /**
  * sum(根据条件求和)
  * @description 根据条件求和
- * 注意:
+ * 注意：
  * 1.字段必须是数值类型
- * 2.若数据条数大于10万以上,可能会有问题
+ * 2.若数据条数大于 10 万以上，可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求和的字段名(必须是数值类型的字段)
+ * @param {string} fieldName   需求和的字段名 (必须是数值类型的字段)
  * @param {object} whereJson 条件
- * @returns {number|null} res 返回值，失败返回null
+ * @returns {number|null} res 返回值，失败返回 null
  * @example
   res = await nw.db.sum({
    dbName:dbName,
@@ -311,19 +340,19 @@ res = await nw.db.selects({
  */
 ```
 
-### 11、根据条件求平均值(avg)
+### 12、根据条件求平均值 (avg)
 
 ```js
 /**
  * avg(根据条件求平均值)
  * @description 根据条件求平均值
- * 注意:
+ * 注意：
  * 1.字段必须是数值类型
- * 2.若数据条数大于10万以上,可能会有问题
+ * 2.若数据条数大于 10 万以上，可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求平均值的字段名(必须是数值类型的字段)
+ * @param {string} fieldName   需求平均值的字段名 (必须是数值类型的字段)
  * @param {object} whereJson 条件
- * @returns {number|null} res 返回值，失败返回null
+ * @returns {number|null} res 返回值，失败返回 null
  * @example
   res = await nw.db.avg({
    dbName:dbName,
@@ -335,19 +364,19 @@ res = await nw.db.selects({
  */
 ```
 
-### 12、根据条件求最大值(max)
+### 13、根据条件求最大值 (max)
 
 ```js
 /**
  * max(根据条件求最大值)
  * @description 根据条件求最大值
- * 注意:
+ * 注意：
  * 1.字段必须是数值类型
- * 2.若数据条数大于10万以上,可能会有问题
+ * 2.若数据条数大于 10 万以上，可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求最大值的字段名(必须是数值类型的字段)
+ * @param {string} fieldName   需求最大值的字段名 (必须是数值类型的字段)
  * @param {object} whereJson 条件
- * @returns {number|null} res 返回值，失败返回null
+ * @returns {number|null} res 返回值，失败返回 null
  * @example
   res = await nw.db.max({
    dbName:dbName,
@@ -359,19 +388,19 @@ res = await nw.db.selects({
  */
 ```
 
-### 13、根据条件求最小值(min)
+### 14、根据条件求最小值 (min)
 
 ```js
 /**
  * min(根据条件求最小值)
  * @description 根据条件求最小值
- * 注意:
+ * 注意：
  * 1.字段必须是数值类型
- * 2.若数据条数大于10万以上,可能会有问题
+ * 2.若数据条数大于 10 万以上，可能会有问题
  * @param {string} dbName  表名
- * @param {string} fieldName   需求最小值的字段名(必须是数值类型的字段)
+ * @param {string} fieldName   需求最小值的字段名 (必须是数值类型的字段)
  * @param {object} whereJson 条件
- * @returns {number|null} res 返回值，失败返回null
+ * @returns {number|null} res 返回值，失败返回 null
  * @example
   res = await nw.db.min({
    dbName:dbName,
@@ -383,7 +412,7 @@ res = await nw.db.selects({
  */
 ```
 
-### 14、根据数组对象批量更新表(updateMany)
+### 15、根据数组对象批量更新表 (updateMany)
 
 ```js
 /**
@@ -407,21 +436,21 @@ res = await nw.db.updateMany({
       name: "nw",
     },
   ],
-  id: "_id", // 如果是别的字段，可以自己指定，如id: "name"
-  upsert: true, //默认为false
+  id: "_id", // 如果是别的字段，可以自己指定，如 id: "name"
+  upsert: true, //默认为 false
 });
 */
 ```
 
 ## 工具库
 
-### 1、对象删除指定的字段,返回新的对象
+### 1、对象删除指定的字段，返回新的对象
 
 ```js
  /**
- * 对象删除指定的字段,返回新的对象
+ * 对象删除指定的字段，返回新的对象
  * @param {Object} data  操作对象
- * @param {Array<String>} deleteKeys 需要删除的键名(数组形式)
+ * @param {Array<String>} deleteKeys 需要删除的键名 (数组形式)
  * @returns {Object} 返回新的对象
  * @example
  * nw.util.deleteObjectKeys({ name: "张三", age: 18 }, ["age"]);
@@ -435,7 +464,7 @@ res = await nw.db.updateMany({
 /**
  * 日期对象转字符串
  * @param {Date | number | string} date 需要转换的时间
- * @param {number} type 为0时格式为：2020-08-01 12:12:12 ， 为1时格式为:20200801121212
+ * @param {number} type 为 0 时格式为：2020-08-01 12:12:12，为 1 时格式为:20200801121212
  * @returns {string} 返回字符串
  * @example
   nw.util.getFullTime(new Date(), 0);
@@ -471,25 +500,25 @@ res = await nw.db.updateMany({
  * @param {string} type mobile 手机号码
  * @param {string} type tel 座机
  * @param {string} type card 身份证
- * @param {string} type mobileCode 6位数字验证码
- * @param {string} type username 账号以字母开头，长度在6~18之间，只能包含字母、数字和下划线
- * @param {string} type pwd 密码以字母开头，长度在6~18之间，只能包含字母、数字和下划线
- * @param {string} type payPwd 6位数字支付密码
+ * @param {string} type mobileCode 6 位数字验证码
+ * @param {string} type username 账号以字母开头，长度在 6~18 之间，只能包含字母、数字和下划线
+ * @param {string} type pwd 密码以字母开头，长度在 6~18 之间，只能包含字母、数字和下划线
+ * @param {string} type payPwd 6 位数字支付密码
  * @param {string} type postal 邮政编码
- * @param {string} type QQ QQ号
- * @param {string} type money 金额(小数点2位)
+ * @param {string} type QQ QQ 号
+ * @param {string} type money 金额 (小数点 2 位)
  * @param {string} type email 邮箱
  * @param {string} type URL 网址
- * @param {string} type IP IP地址
- * @param {string} type date 格式为：2019-10-10 年-月-日的时间
- * @param {string} type time 格式为：12:00:00 小时:分钟:秒的时间
- * @param {string} type dateTime 格式为：2019-10-10 12:00:00 年-月-日 小时:分钟:秒的时间
+ * @param {string} type IP IP 地址
+ * @param {string} type date 格式为：2019-10-10 年 - 月 - 日的时间
+ * @param {string} type time 格式为：12:00:00 小时：分钟：秒的时间
+ * @param {string} type dateTime 格式为：2019-10-10 12:00:00 年 - 月 - 日 小时：分钟：秒的时间
  * @param {string} type number 数字
  * @param {string} type english 英文
  * @param {string} type chinese 中文
  * @param {string} type lower 小写
  * @param {string} type upper 大写
- * @param {string} type HTML HTML标记
+ * @param {string} type HTML HTML 标记
  * @returns {boolean} 返回布尔值
  * @example
   nw.util.checkStr("123456", "mobile");
@@ -510,12 +539,12 @@ res = await nw.db.updateMany({
 */
 ```
 
-### 5、对象属性拷贝(浅拷贝)
+### 5、对象属性拷贝 (浅拷贝)
 
 ```js
 /**
- * 对象属性拷贝(浅拷贝)
- * @description 将 obj2 的属性赋值给 obj1 (如果obj1中有对应的属性,则会被obj2的属性值覆盖)
+ * 对象属性拷贝 (浅拷贝)
+ * @description 将 obj2 的属性赋值给 obj1 (如果 obj1 中有对应的属性，则会被 obj2 的属性值覆盖)
  * @param {object} obj1
  * @param {object} obj2
  * @returns {object} 返回一个新的对象
@@ -531,7 +560,7 @@ res = await nw.db.updateMany({
 
 ```js
  /**
- * 复制一份对象-没有映射关系
+ * 复制一份对象 - 没有映射关系
  * @description 主要用于解除映射关系
  * @param {object} obj
  * @returns {object} 返回一个新的对象
@@ -561,15 +590,15 @@ res = await nw.db.updateMany({
  */
 ```
 
-### 8、两个(元素为对象)的数组合并,并去除重复的数据
+### 8、两个 (元素为对象) 的数组合并，并去除重复的数据
 
 ```js
 /**
- * 两个(元素为对象)的数组合并,并去除重复的数据
- * @description 两个数组合并,并去除重复的数据
- * @param {Array} arr1 第一个数组(arr1和aar2没有顺序要求)
+ * 两个 (元素为对象) 的数组合并，并去除重复的数据
+ * @description 两个数组合并，并去除重复的数据
+ * @param {Array} arr1 第一个数组 (arr1 和 aar2 没有顺序要求)
  * @param {Array} aar2 第二个数组
- * @param {String} flag 判断标识,默认用id来判断,若flag传-1,代表不去除重复数据
+ * @param {String} flag 判断标识，默认用 id 来判断，若 flag 传 -1，代表不去除重复数据
  * @returns {Array} 返回一个新的数组
  * @example
   nw.util.arr_concat([{id:1,name:"张三"},{id:2,name:"李四"}],[{id:2,name:"李四"},{id:3,name:"王五"}])
@@ -582,7 +611,7 @@ res = await nw.db.updateMany({
 ```js
 /**
  * 字符串路径找对象的属性值
- * @description 自动根据字符串路径获取对象中的值支持.和[] , 且任意一个值为undefined时,不会报错,会直接返回undefined
+ * @description 自动根据字符串路径获取对象中的值支持。和 [] , 且任意一个值为 undefined 时，不会报错，会直接返回 undefined
  * @param {object} dataObj
  * @param {string} name
  * @returns {any} 返回一个新的数组
@@ -597,7 +626,7 @@ res = await nw.db.updateMany({
 ```js
 /**
  * 字符串路径设置对象的属性值
- * @description 自动根据字符串路径设置对象中的值 支持.和[]
+ * @description 自动根据字符串路径设置对象中的值 支持。和 []
  * @param {object} dataObj
  * @param {string} name
  * @param {any} object
@@ -706,11 +735,11 @@ res = await nw.db.updateMany({
  */
 ```
 
-### 16、获取对象数组中的某一个item,根据指定的键值
+### 16、获取对象数组中的某一个 item，根据指定的键值
 
 ```js
 /**
- * 获取对象数组中的某一个item,根据指定的键值
+ * 获取对象数组中的某一个 item，根据指定的键值
  * @param {Array} list 对象数组
  * @param {string} key 键
  * @param {string} value 值
@@ -721,16 +750,16 @@ res = await nw.db.updateMany({
  */
 ```
 
-### 17、数组操作 - 将对象数组转成json
+### 17、数组操作 - 将对象数组转成 json
 
 ```js
 /**
- * 数组操作 - 将对象数组转成json
+ * 数组操作 - 将对象数组转成 json
  * @param {Array} list 对象数组
  * @param {string} key 键
  * @returns {Object} json
  * @example
-  如[{"_id":"001","name":"name1","sex":1},{"_id":"002","name":"name2","sex":2}]
+  如 [{"_id":"001","name":"name1","sex":1},{"_id":"002","name":"name2","sex":2}]
   转成
   {"001",{"_id":"001","name":"name1","sex":1},"002":{"_id":"002","name":"name2","sex":2}}
   nw.util.listToJson(list, "_id");
@@ -753,14 +782,14 @@ res = await nw.db.updateMany({
  */
 ```
 
-### 19、将字符串id转化为指定位数的纯数字字符串id(会重复)
+### 19、将字符串 id 转化为指定位数的纯数字字符串 id(会重复)
 
 ```js
 /**
- * 将字符串id转化为指定位数的纯数字字符串id(会重复)
- * @param {string} str 字符串id
+ * 将字符串 id 转化为指定位数的纯数字字符串 id(会重复)
+ * @param {string} str 字符串 id
  * @param {number} length 长度
- * @returns {string} 纯数字字符串id
+ * @returns {string} 纯数字字符串 id
  * @example
   nw.util.stringIdToNumberId(uid,6);
  */
@@ -777,22 +806,22 @@ res = await nw.db.updateMany({
  * @example
   freightsItem 运费模板
  {
-     first_weight Integer 首重 单位KG,
+     first_weight Integer 首重 单位 KG,
     first_weight_price Integer 首重 首重价格
-    continuous_weight Integer  续重 单位KG
-    continuous_weight_price Integer 续重价格 单位分 100 = 1元
-    max_weight Integer 重量达到此值时,会多计算首重的价格,并少一次续重的价格 倍乘(相当于拆分多个包裹)
+    continuous_weight Integer  续重 单位 KG
+    continuous_weight_price Integer 续重价格 单位分 100 = 1 元
+    max_weight Integer 重量达到此值时，会多计算首重的价格，并少一次续重的价格 倍乘 (相当于拆分多个包裹)
   }
  weight 运费重量
  nw.util.calcFreights(freightsItem, weight);
 */
 ```
 
-### 21、判断B常量数组是否至少有一个元素在A常量数组中存在(两数组有交集)
+### 21、判断 B 常量数组是否至少有一个元素在 A 常量数组中存在 (两数组有交集)
 
 ```js
 /**
- * 判断B常量数组是否至少有一个元素在A常量数组中存在(两数组有交集)
+ * 判断 B 常量数组是否至少有一个元素在 A 常量数组中存在 (两数组有交集)
  * @param {Array} arr1 常量数组
  * @param {Array} arr2 常量数组
  * @returns {boolean} 是否有交集
@@ -801,11 +830,11 @@ res = await nw.db.updateMany({
  */
 ```
 
-### 22、判断arr是否为一个数组，返回一个bool值
+### 22、判断 arr 是否为一个数组，返回一个 bool 值
 
 ```js
  /**
- * 判断arr是否为一个数组，返回一个bool值
+ * 判断 arr 是否为一个数组，返回一个 bool 值
  * @param {Array} arr
  * @returns {boolean} 是否为数组
  * @example
@@ -835,10 +864,10 @@ res = await nw.db.updateMany({
    * @returns {Array} 转换后的树形结构
    * @example
   nw.util.arrayToTree(arrayData,{
-    id: "id",  // 自己的id字段,必填
-    parent_id: "pid", // 父级id字段,必填
-    children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
-    need_field : ["title"] // 除id、parent_id、children外显示的属性,可选,不填默认全部显示
+    id: "id",  // 自己的 id 字段，必填
+    parent_id: "pid", // 父级 id 字段，必填
+    children : "children", // 转换树形结构后的子级的属性值，可选，不填默认 children
+    need_field : ["title"] // 除 id、parent_id、children 外显示的属性，可选，不填默认全部显示
   });
   */
 ```
@@ -865,9 +894,9 @@ res = await nw.db.updateMany({
  * @returns {Array} 转换后的数组
  * @example
   nw.util.treeToArray(treeData,{
-    id : "menu_id", // 自己的id字段,必填
-    parent_id : "parent_id", // 父级id字段,必填
-    children : "children", // 转换树形结构后的子级的属性值,可选,不填默认children
+    id : "menu_id", // 自己的 id 字段，必填
+    parent_id : "parent_id", // 父级 id 字段，必填
+    children : "children", // 转换树形结构后的子级的属性值，可选，不填默认 children
   });
  */
 ```
