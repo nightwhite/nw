@@ -197,7 +197,7 @@ const Dao = {
         .where(whereJson)
         .update(dataJson, { multi: true });
       if (res) {
-        num = res.deleted;
+        num = res.updated;
       } else {
         console.error((res as any).errMsg);
         num = -1;
