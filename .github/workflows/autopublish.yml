@@ -26,8 +26,8 @@ jobs:
           EMAIL: ${{ secrets.GIT_EMAIL }}
           NAME: ${{ secrets.GIT_NAME }}
         run: |
-          git config --global user.email "${env.EMAIL}"
-          git config --global user.name "${env.NAME}"
+          git config --global user.email ${{ env.EMAIL }}
+          git config --global user.name ${{ env.NAME }}
       - name: Publish to NPM
         if: ${{ github.event.pull_request.merged == true }}
         run: npm run pub
