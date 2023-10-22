@@ -25,6 +25,7 @@ interface ForeignDB {
   dbName: string;
   foreignKey: string;
   localKey: string;
+  localKeyType?: string;
   as?: string;
   limit?: number;
   whereJson?: object;
@@ -36,12 +37,12 @@ const Dao = {
   /**
    * add(单条记录)
    * @description 将单条对象数据插入到集合中
-   * 注意:使用此函数添加的数据会自动加上_add_time(添加当前时间戳) 和 _add_time_str(当前时间字符串格式)
+   * 注意：使用此函数添加的数据会自动加上_add_time(添加当前时间戳) 和 _add_time_str(当前时间字符串格式)
    * event 请求参数 说明
    * @param {string} dbName  	表名
-   * @param {object} dataJson  需要添加的数据(json格式)
+   * @param {object} dataJson  需要添加的数据 (json 格式)
    * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
-   * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+   * @returns {string|null} res 返回值为添加数据的 id，添加失败，则返回 null
    * @example 
     res.id = await nw.db.add({
       dbName:dbName,
@@ -84,9 +85,9 @@ const Dao = {
    * adds(多条记录)
    * @description 将数组对象插入到集合中
    * @param {string} dbName   表名
-   * @param {Array.<object>} dataJson  需要添加的数据(json数组格式)
+   * @param {Array.<object>} dataJson  需要添加的数据 (json 数组格式)
    * @param {boolean} cancelAddTime  取消自动生成 _add_time 和 _add_time_str 字段
-   * @returns {string|null} res 返回值为添加数据的id,添加失败,则返回null
+   * @returns {string|null} res 返回值为添加数据的 id，添加失败，则返回 null
    * @example
     res.id = await nw.db.adds({
       dbName:dbName,
@@ -106,7 +107,7 @@ const Dao = {
     const date = new Date();
     const _add_time = date.getTime();
     const _add_time_str = date.toLocaleString("zh-CN", timeOptions);
-    let arr:any; // 不带ID的数据
+    let arr:any; // 不带 ID 的数据
     for (const i in dataJson) {
       if (
         !dataJson[i]._add_time &&
@@ -115,7 +116,7 @@ const Dao = {
         dataJson[i]._add_time = _add_time;
         dataJson[i]._add_time_str = _add_time_str;
       }
-      // 如果有_id,则转换为字符串
+      // 如果有_id，则转换为字符串
       if (dataJson[i]._id) {
         dataJson[i]._id = dataJson[i]._id.toString();
       }
@@ -129,7 +130,7 @@ const Dao = {
 
   /**
    * del(根据条件删除记录)
-   * @description 批量删除符合条件的记录,可批量删除
+   * @description 批量删除符合条件的记录，可批量删除
    * @param {string} dbName   表名
    * @param {object} whereJson 条件
    * @returns {number} res 返回值为删除的记录数量
@@ -156,7 +157,7 @@ const Dao = {
         num = -1;
       }
     } else {
-      console.error("whereJson条件不能为空");
+      console.error("whereJson 条件不能为空");
     }
     return num;
     // 数据库查询结束----------------------------------------------------------
@@ -164,10 +165,10 @@ const Dao = {
 
   /**
    * update(根据条件修改记录)
-   * @description 批量修改符合条件的记录,可批量修改
+   * @description 批量修改符合条件的记录，可批量修改
    * @param {string} dbName   表名
    * @param {object} whereJson 条件
-   * @param {object} dataJson  需要修改的数据(json格式)
+   * @param {object} dataJson  需要修改的数据 (json 格式)
    * @returns {number} res 返回值为修改的记录数量
    * @example
     res.num = await nw.db.update({
@@ -203,7 +204,7 @@ const Dao = {
         num = -1;
       }
     } else {
-      console.error("whereJson条件不能为空");
+      console.error("whereJson 条件不能为空");
     }
     return num;
     // 数据库查询结束----------------------------------------------------------
@@ -213,12 +214,12 @@ const Dao = {
    * select(根据条件查询记录)
    * @description 根据条件查询记录
    * @param {string} dbName  表名
-   * @param {boolean} getCount 是否获取符合条件的总数量,默认不获取
-   * @param {number} pageIndex 第几页,默认第1页
-   * @param {number} pageSize  每页显示数量，默认10条
+   * @param {boolean} getCount 是否获取符合条件的总数量，默认不获取
+   * @param {number} pageIndex 第几页，默认第 1 页
+   * @param {number} pageSize  每页显示数量，默认 10 条
    * @param {object} whereJson 条件
-   * @param {object} fieldJson 字段显示规则,要么都为0,要么都为1
-   * @param {Array.<object>} sortArr 排序规则 asc升序 desc降序
+   * @param {object} fieldJson 字段显示规则，要么都为 0，要么都为 1
+   * @param {Array.<object>} sortArr 排序规则 asc 升序 desc 降序
    * @returns {object} res 返回值
    * @returns {Array.<object>} res.rows 列表
    * @returns {boolean} res.hasMore 分页需要 true 还有下一页 false 无下一页
@@ -356,13 +357,13 @@ const Dao = {
   /**
    * sum(根据条件求和)
    * @description 根据条件求和
-   * 注意:
+   * 注意：
    * 1.字段必须是数值类型
-   * 2.若数据条数大于10万以上,可能会有问题
+   * 2.若数据条数大于 10 万以上，可能会有问题
    * @param {string} dbName  表名
-   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {string} fieldName   需求求和的字段名 (比如是数值类型的字段)
    * @param {object} whereJson 条件
-   * @returns {number|null} res 返回值，失败返回null
+   * @returns {number|null} res 返回值，失败返回 null
    * @example
     res = await nw.db.sum({
     dbName:dbName,
@@ -408,13 +409,13 @@ const Dao = {
   /**
    * avg(根据条件求平均值)
    * @description 根据条件求平均值
-   * 注意:
+   * 注意：
    * 1.字段必须是数值类型
-   * 2.若数据条数大于10万以上,可能会有问题
+   * 2.若数据条数大于 10 万以上，可能会有问题
    * @param {string} dbName  表名
-   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {string} fieldName   需求求和的字段名 (比如是数值类型的字段)
    * @param {object} whereJson 条件
-   * @returns {number|null} res 返回值，失败返回null
+   * @returns {number|null} res 返回值，失败返回 null
    * @example
     res = await nw.db.avg({
     dbName:dbName,
@@ -458,13 +459,13 @@ const Dao = {
   /**
    * max(根据条件求最大值)
    * @description 根据条件求最大值
-   * 注意:
+   * 注意：
    * 1.字段必须是数值类型
-   * 2.若数据条数大于10万以上,可能会有问题
+   * 2.若数据条数大于 10 万以上，可能会有问题
    * @param {string} dbName  表名
-   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {string} fieldName   需求求和的字段名 (比如是数值类型的字段)
    * @param {object} whereJson 条件
-   * @returns {number|null} res 返回值，失败返回null
+   * @returns {number|null} res 返回值，失败返回 null
    * @example
     res = await nw.db.max({
     dbName:dbName,
@@ -508,13 +509,13 @@ const Dao = {
   /**
    * min(根据条件求最小值)
    * @description 根据条件求最小值
-   * 注意:
+   * 注意：
    * 1.字段必须是数值类型
-   * 2.若数据条数大于10万以上,可能会有问题
+   * 2.若数据条数大于 10 万以上，可能会有问题
    * @param {string} dbName  表名
-   * @param {string} fieldName   需求求和的字段名(比如是数值类型的字段)
+   * @param {string} fieldName   需求求和的字段名 (比如是数值类型的字段)
    * @param {object} whereJson 条件
-   * @returns {number|null} res 返回值，失败返回null
+   * @returns {number|null} res 返回值，失败返回 null
    * @example
     res = await nw.db.min({
     dbName:dbName,
@@ -556,24 +557,24 @@ const Dao = {
   },
 
   /**
-  * selects(万能联表,多表连查)
-  * @description 万能联表,多表连查
+  * selects(万能联表，多表连查)
+  * @description 万能联表，多表连查
   * @param {string} dbName  	主表名
   * @param {boolean} getCount   是否获取总条数
   * @param {number} pageIndex   页码
   * @param {number} pageSize   每页条数
-  * @param {object} whereJson   主表where条件
+  * @param {object} whereJson   主表 where 条件
   * @param {object} fieldJson   主表字段显示规则
   * @param {array} sortArr   主表排序规则
   * @param {array} foreignDB   副表列表
-  * @returns {object|null} res 返回值，失败返回null
+  * @returns {object|null} res 返回值，失败返回 null
   * @example
   res = await nw.baseDao.selects({
     dbName: "uni-id-users",
     getCount: false,
     pageIndex: 1,
     pageSize: 10,
-    // 主表where条件
+    // 主表 where 条件
     whereJson: {
 
     },
@@ -592,7 +593,7 @@ const Dao = {
         foreignKey: "user_id",
         as: "orderList",
         limit: 10,
-        // 副表where条件
+        // 副表 where 条件
         whereJson: {},
         // 副表字段显示规则
         fieldJson: {},
@@ -604,7 +605,7 @@ const Dao = {
         localKey:"_id",
         foreignKey: "user_id",
         as: "vipInfo",
-        limit: 1, // 当limit = 1时，以对象形式返回，否则以数组形式返回
+        limit: 1, // 当 limit = 1 时，以对象形式返回，否则以数组形式返回
       }
     ]
   });
@@ -628,13 +629,13 @@ const Dao = {
     fieldJson?: object;
     foreignDB?: ForeignDB[];
   }) {
-    // 获取全部的as
+    // 获取全部的 as
     let ass: any = [];
     for (const l in foreignDB) {
       const { as } = foreignDB[l];
       ass.push(as);
     }
-    // 数据库API开始----------------------------------------------------------
+    // 数据库 API 开始----------------------------------------------------------
     if (JSON.stringify(whereJson) === "{}") {
       whereJson = {
         _id: _.neq("___"),
@@ -690,6 +691,7 @@ const Dao = {
         dbName,
         foreignKey,
         localKey,
+        localKeyType = null,
         as,
         limit,
         whereJson,
@@ -700,6 +702,12 @@ const Dao = {
       let pipelineJson: any = $.pipeline().match(
         _.expr($.and([$.eq(["$" + foreignKey, "$$localKey" + localKey])]))
       );
+      // 如果关联主键是数组
+      if(localKey && localKeyType == "array"){
+        pipelineJson = $.pipeline().match(
+          _.expr($.in(["$" + foreignKey, "$$localKey" + localKey]))
+        );
+      }
       // 副表where条件
       if (whereJson && JSON.stringify(whereJson) !== "{}") {
         pipelineJson = pipelineJson.match(whereJson);
@@ -737,11 +745,14 @@ const Dao = {
         pipeline: pipelineJson,
         as: as,
       };
+      console.log(111,lookupJson);
       result = result.lookup(lookupJson);
     }
     // 连表结束-----------------------------------------------------------
     // 获取结果
     // return 111
+    
+    
     result = await result.end();
     let rows: any = result.data;
     for (const i in rows) {
@@ -757,7 +768,7 @@ const Dao = {
       }
     }
 
-    //去掉都为[]的了连表数据
+    //去掉都为 [] 的了连表数据
     for (const ii in rows) {
       for (const jj in foreignDB) {
         const { as }: { as?: any } = foreignDB[jj];
@@ -790,16 +801,16 @@ const Dao = {
     }
     res.rows = rows; // 两表连接合并后的数据
     return res;
-    // 数据库API结束----------------------------------------------------------
+    // 数据库 API 结束----------------------------------------------------------
   },
 
   /**
    * findByWhereJson
-   * @description 根据whereJson查询对象
+   * @description 根据 whereJson 查询对象
    * @param {string} dbName  	表名
    * @param {object} fieldJson 字段显示规则
    * @param {object} whereJson 查询条件
-   * @param {Array.<object>} sortArr 排序规则 asc升序 desc降序
+   * @param {Array.<object>} sortArr 排序规则 asc 升序 desc 降序
    * @returns res 返回值为单行记录
    * @example
     res = await nw.db.findByWhereJson({
@@ -851,7 +862,7 @@ const Dao = {
           return null;
         }
       } else {
-        console.error("whereJson条件不能为空");
+        console.error("whereJson 条件不能为空");
       }
     } catch (e) {
       console.error(e);
@@ -862,11 +873,11 @@ const Dao = {
 
   /**
    * findListByWhereJson
-   * @description 根据whereJson查询多条记录（不分页）
+   * @description 根据 whereJson 查询多条记录（不分页）
    * @param {string} dbName  	表名
    * @param {object} fieldJson 字段显示规则
    * @param {object} whereJson 查询条件
-   * @param {Array.<object>} sortArr 排序规则 asc升序 desc降序
+   * @param {Array.<object>} sortArr 排序规则 asc 升序 desc 降序
    * @returns res 返回值为多行记录
    * @example
     res = await nw.db.findListByWhereJson({
@@ -918,7 +929,7 @@ const Dao = {
           return null;
         }
       } else {
-        console.error("whereJson条件不能为空");
+        console.error("whereJson 条件不能为空");
       }
     } catch (e) {
       console.error(e);
@@ -989,8 +1000,8 @@ const Dao = {
         name: "nw",
       },
     ],
-    id: "_id", // 如果是别的字段，可以自己指定，如id: "name"
-    upsert: true, //默认为false
+    id: "_id", // 如果是别的字段，可以自己指定，如 id: "name"
+    upsert: true, //默认为 false
   });
   */
   updateMany: async ({  
@@ -1042,17 +1053,17 @@ const Dao = {
 
 export default Dao;
 
-// 封装selectAll 分次获取全部数据 每次1000条
+// 封装 selectAll 分次获取全部数据 每次 1000 条
 async function selectAll(event: any) {
   const dbName = event.dbName; // 表名
   const json: any = {};
   // 数据库查询开始----------------------------------------------------------
-  const MAX_LIMIT = 1000; // 最大一次获取1000条数据
+  const MAX_LIMIT = 1000; // 最大一次获取 1000 条数据
 
-  let pageSize = event.pageSize ? event.pageSize : 10; // 默认10条数据
+  let pageSize = event.pageSize ? event.pageSize : 10; // 默认 10 条数据
   pageSize = pageSize > 0 ? pageSize : 999999999;
 
-  // 获取select对象开始-----------------------------------------------------------
+  // 获取 select 对象开始-----------------------------------------------------------
   const selectDataObj = await getSelectData(event);
   const {
     result, // 结果集
@@ -1061,7 +1072,7 @@ async function selectAll(event: any) {
     getCount, // 是否需要分页
     pageIndex, // 当前页码
   } = selectDataObj;
-  // 获取select对象结束-----------------------------------------------------------
+  // 获取 select 对象结束-----------------------------------------------------------
 
   // 计算需分几次获取数据
   let t1 = total;
@@ -1112,7 +1123,7 @@ async function selectAll(event: any) {
   // 数据库查询结束----------------------------------------------------------
 }
 
-// 获取select需要的参数
+// 获取 select 需要的参数
 async function getSelectData(event: any) {
   let { dbName, whereJson } = event;
   if (!whereJson || JSON.stringify(whereJson) == "{}") {
@@ -1120,7 +1131,7 @@ async function getSelectData(event: any) {
   }
   // 封装数据参数开始----------------------------------------------------------
   let pageIndex = event.pageIndex ? event.pageIndex : 1; // 默认第一页开始
-  let pageSize = event.pageSize ? event.pageSize : 10; // 默认10条数据
+  let pageSize = event.pageSize ? event.pageSize : 10; // 默认 10 条数据
   let getCount = event.getCount ? event.getCount : false; // 是否获取总数量
   if (pageSize == -1) {
     pageIndex = 1;
@@ -1128,7 +1139,7 @@ async function getSelectData(event: any) {
     getCount = true;
   }
   const sortArr = event.sortArr; // 排序数组
-  const fieldJson = event.fieldJson; // 需要返回的字段,若field不传,则默认返回全部字段
+  const fieldJson = event.fieldJson; // 需要返回的字段，若 field 不传，则默认返回全部字段
   let total = 0;
   let hasMore = false; // 提示前端是否还有数据
   // console.log("whereJson:",whereJson);
