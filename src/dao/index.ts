@@ -765,7 +765,6 @@ const Dao = {
         }
       }
     }
-
    
     for (const ii in rows) {
       for (const jj in foreignDB) {
@@ -795,10 +794,7 @@ const Dao = {
     if (getCount) {
       res.hasMore = hasMore;
       res.total = total;
-    } else {
-      res.total = rows ? rows.length : 0;
-      res.hasMore = total >= pageSize;
-    }
+    } 
     res.rows = rows; // 两表连接合并后的数据
     return res;
     // 数据库 API 结束----------------------------------------------------------
