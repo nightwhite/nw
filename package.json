@@ -4,7 +4,7 @@
   "description": "nw for Laf",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "homepage": "",
+  "homepage": "https://github.com/nightwhite/nw",
   "repository": {
     "type": "git",
     "url": ""
