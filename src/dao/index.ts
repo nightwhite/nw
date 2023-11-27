@@ -745,7 +745,6 @@ const Dao = {
         pipeline: pipelineJson,
         as: as,
       };
-      console.log(111,lookupJson);
       result = result.lookup(lookupJson);
     }
     // 连表结束-----------------------------------------------------------
