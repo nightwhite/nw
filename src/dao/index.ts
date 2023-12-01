@@ -630,6 +630,8 @@ const Dao = {
     sortArr?: Array<object>;
     fieldJson?: object;
     foreignDB?: ForeignDB[];
+    lastWhereJson?: object;
+    lastSortArr?: Array<object>;
   }) {
     // 获取全部的 as
     let ass: any = [];
