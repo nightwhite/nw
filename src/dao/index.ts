@@ -763,7 +763,7 @@ const Dao = {
     if (lastSortArr && JSON.stringify(lastSortArr) !== "[]") {
       const sortJson: any = {};
       for (const i in lastSortArr) {
-        const sortItem = lastSortArr[i];
+        const sortItem: any = lastSortArr[i];
         const name = sortItem.name; 
         let type: any = sortItem.type;
         if (type === undefined || type === "" || type === "asc") {
