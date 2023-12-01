@@ -759,20 +759,21 @@ const Dao = {
     }
     
     // 在此处添加 lastSortArr 的处理
-    
-    if (lastSortArr && Array.isArray(lastSortArr) && lastSortArr.length > 0) {
-        const sortJson: any = {};
-        for (const sortItem of lastSortArr) {
-            const name = sortItem.name;
-            let type = sortItem.type;
-            if (type === undefined || type === "" || type === "asc") {
-                type = 1; // 升序
-            } else {
-                type = -1; // 降序
-            }
-            sortJson[name] = type;
+    // lastSortArr 排序规则
+    if (lastSortArr && JSON.stringify(lastSortArr) !== "[]") {
+      const sortJson: any = {};
+      for (const i in lastSortArr) {
+        const sortItem = lastSortArr[i];
+        const name = sortItem.name; 
+        let type: any = sortItem.type;
+        if (type === undefined || type === "" || type === "asc") {
+          type = 1; // 升序
+        } else {
+          type = -1; // 降序
         }
-        result = result.sort(sortJson);
+        sortJson[name] = type;
+      }
+      result = result.sort(sortJson);
     }
     
     // 获取结果
