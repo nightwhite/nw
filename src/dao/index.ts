@@ -761,7 +761,7 @@ const Dao = {
     // 在此处添加 lastSortArr 的处理
     
     if (lastSortArr && Array.isArray(lastSortArr) && lastSortArr.length > 0) {
-        const sortJson = {};
+        const sortJson: any = {};
         for (const sortItem of lastSortArr) {
             const name = sortItem.name;
             let type = sortItem.type;
