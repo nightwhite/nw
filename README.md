@@ -150,7 +150,6 @@ export async function main(ctx: FunctionContext) {
 * selects(万能联表，多表连查)
 * @params {Object} event 请求参数
 * event 请求参数 说明
-* @params {esm} cloud   (必填)lafjs-cloud
 * @params {String} dbName   (必填) 表名
 * @params {Object} whereJson (可选) 主表 where 条件
 * @params {Number} pageIndex (可选，默认 1) 第几页
@@ -177,7 +176,6 @@ export async function main(ctx: FunctionContext) {
 * @params {Number} pageSize  每页显示数量
 * 调用示例：
 res = await nw.db.selects({
-  cloud:cloud,
   dbName: "users",
   getCount: false,
   pageIndex: 1,
