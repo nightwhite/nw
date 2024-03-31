@@ -107,7 +107,8 @@ const Dao = {
     const date = new Date();
     const _add_time = date.getTime();
     const _add_time_str = date.toLocaleString("zh-CN", timeOptions);
-    let arr:any; // 不带 ID 的数据
+    // let arr:any; // 不带 ID 的数据
+    let arr = [] as any;
     for (const i in dataJson) {
       if (
         !dataJson[i]._add_time &&
