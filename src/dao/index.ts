@@ -1,7 +1,5 @@
-import { Db } from "database-proxy"
-import * as mongodb from "mongodb"
 import cloud from "@lafjs/cloud"
-const db = new Db()
+const db = cloud.database()
 const _ = db.command
 const $ = _.aggregate
 
