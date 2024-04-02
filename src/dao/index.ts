@@ -710,6 +710,9 @@ const Dao = {
       )
       // 如果关联主键是数组
       if (localKey && localKeyType == "array") {
+        if (!Array.isArray(whereJson[localKey])) {
+          whereJson[localKey] = [] // 如果本地键不存在，则将其设置为空数组
+        }
         pipelineJson = $.pipeline().match(
           _.expr($.in(["$" + foreignKey, "$$localKey" + localKey]))
         )
