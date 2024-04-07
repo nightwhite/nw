@@ -1122,10 +1122,13 @@ async function selectAll(event: any) {
   // 等待所有
   let res: any = {}
   try {
-    res = (await Promise.all(tasks)).reduce((acc: any, cur) => ({
-      data: acc.data.concat(cur.data),
-      errMsg: acc.errMsg,
-    }))
+    res = (await Promise.all(tasks)).reduce(
+      (acc: any, cur) => ({
+        data: acc.data.concat(cur.data),
+        errMsg: acc.errMsg,
+      }),
+      { data: [], errMsg: null }
+    )
   } catch (e) {
     console.error("selectAll-异常", event, e)
     res = {
