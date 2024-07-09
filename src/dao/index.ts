@@ -566,14 +566,14 @@ const Dao = {
   * @param {number} pageIndex   页码
   * @param {number} pageSize   每页条数
   * @param {object} whereJson   主表 where 条件
-  * @param {object} fieldJson   主表字段显示规则
+  * @param {object} fieldJson   主表字段显示规则，如果有联表查询，那么就在最后面，对应 project
   * @param {array} sortArr   主表排序规则
   * @param {array} foreignDB   副表列表
   * @returns {object|null} res 返回值，失败返回 null
   * @example
   res = await nw.baseDao.selects({
-    dbName: "uni-id-users",
-    getCount: false,
+    dbName: "users",
+    getCount: false, // 只查询满足主表的总数
     pageIndex: 1,
     pageSize: 10,
     // 主表 where 条件
@@ -642,7 +642,7 @@ const Dao = {
       ass.push(as)
     }
     // 数据库 API 开始----------------------------------------------------------
-    if (JSON.stringify(whereJson) === "{}") {
+    if (JSON.stringify(whereJson) === "{}" || !whereJson) {
       whereJson = {
         _id: _.neq("___"),
       }
@@ -668,10 +668,6 @@ const Dao = {
     // 主表where条件
     if (whereJson && JSON.stringify(whereJson) !== "{}") {
       result = result.match(whereJson)
-    }
-    // 主表字段显示规则
-    if (fieldJson && JSON.stringify(fieldJson) !== "{}") {
-      result = result.project(fieldJson)
     }
     // 主表排序规则
     if (sortArr && JSON.stringify(sortArr) !== "[]") {
@@ -777,7 +773,10 @@ const Dao = {
       }
       result = result.sort(sortJson)
     }
-
+    // 主表字段显示规则
+    if (fieldJson && JSON.stringify(fieldJson) !== "{}") {
+      result = result.project(fieldJson)
+    }
     // 获取结果
     result = await result.end()
     let rows: any = result.data
