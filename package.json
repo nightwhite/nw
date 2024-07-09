@@ -1,6 +1,6 @@
 {
   "name": "nw-lafjs",
-  "version": "1.0.42",
+  "version": "1.0.43",
   "description": "nw for Laf",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,6 +16,6 @@
   "author": "NightWhite",
   "license": "ISC",
   "dependencies": {
-    "@lafjs/cloud": "^1.0.0-beta.14"
+    "@lafjs/cloud": "1.0.0"
   }
 }
